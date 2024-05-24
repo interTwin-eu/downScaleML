@@ -159,8 +159,8 @@ if __name__ == '__main__':
     predictand_train = Obs_train
     predictand_valid = Obs_valid
     
-    predictors_train = stacker(predictors_train)
-    predictors_valid = stacker(predictors_valid)
+    predictors_train = stacker(predictors_train).compute()
+    predictors_valid = stacker(predictors_valid).compute()
     predictand_train = stacker(predictand_train)
     predictand_valid = stacker(predictand_valid)
     
