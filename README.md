@@ -1,5 +1,5 @@
 # downscaleml
-First information first!
+First information first! - TESTING!
 The dist folder contains the **''downscaleml"** package, install it using `pip install downscaleml-1.0.tar.gz`. Make sure you already have GDAL dependencies installed in your conda/venv/any_environments. If suppose you face problems with the GDAL installation in your system as well as in your environment, don't worry, I am here for you.
 
 This package requires GDAL==3.4.3. 
