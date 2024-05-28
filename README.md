@@ -27,3 +27,8 @@ You are good to go exploring
 ## Additional Information
 
 The data is not provided in this package, the paths for the input-output data is provided in the `downscaleml/core/inputoutput.py`. You can make necessary changes here to reflect elsewhere in the project.
+
+
+## 
+
+## How to effectively use this version of downScaleML

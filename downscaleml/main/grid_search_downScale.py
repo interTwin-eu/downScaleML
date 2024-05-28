@@ -29,13 +29,11 @@ from sklearn.model_selection import train_test_split
 # locals
 from downscaleml.core.dataset import ERA5Dataset, NetCDFDataset, EoDataset
 
-from downscaleml.main.config import (NET, ERA5_PLEVELS, ERA5_PREDICTORS, PREDICTAND,
+from downscaleml.main.config import (ERA5_PATH, OBS_PATH, DEM_PATH, MODEL_PATH, TARGET_PATH, NET, ERA5_PLEVELS, ERA5_PREDICTORS, PREDICTAND,
                                      CALIB_PERIOD, VALID_PERIOD, DOY, NORM,
                                      OVERWRITE, DEM, DEM_FEATURES, STRATIFY,
                                      WET_DAY_THRESHOLD, VALID_SIZE, 
                                      start_year, end_year, CHUNKS, combination, paramss)
-
-from downscaleml.main.inputoutput import (ERA5_PATH, OBS_PATH, DEM_PATH, MODEL_PATH, TARGET_PATH)
 
 from downscaleml.core.constants import (ERA5_P_VARIABLES, ERA5_P_VARIABLES_SHORTCUT, ERA5_P_VARIABLE_NAME,
                                         ERA5_S_VARIABLES, ERA5_S_VARIABLES_SHORTCUT, ERA5_S_VARIABLE_NAME,

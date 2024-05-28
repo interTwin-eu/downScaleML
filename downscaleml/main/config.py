@@ -140,7 +140,7 @@ if DEM:
 #NET='AdaBoostRegressor'
 
 CALIB_PERIOD = np.arange(
-    datetime.datetime.strptime('2011-01-01', '%Y-%m-%d').date(),
+    datetime.datetime.strptime('1985-01-01', '%Y-%m-%d').date(),
     datetime.datetime.strptime('2016-01-01', '%Y-%m-%d').date())
 
 start_year = np.min(CALIB_PERIOD).astype(datetime.datetime).year
@@ -153,7 +153,7 @@ VALID_PERIOD = np.arange(
 
 SEAS5_year = np.min(VALID_PERIOD).astype(datetime.datetime).year
 
-combination = 4
+combination = 100
 
 params = {'reg_alpha': 0.001018337175296235,
  'reg_lambda': 0.10078524608920145,
