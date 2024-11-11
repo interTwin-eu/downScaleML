@@ -131,6 +131,13 @@ class EoDataset(torch.utils.data.Dataset):
         slope = da.asarray(slope)
         aspect = da.asarray(aspect)
 
+        dem = np.rot90(dem, k=2)
+        dem = np.fliplr(dem)
+        slope = np.rot90(slope, k=2)
+        slope = np.fliplr(slope)
+        aspect = np.rot90(aspect, k=2)
+        aspect = np.fliplr(aspect)
+        
         # digital elevation model features: elevation, slope and aspect
         dem_vars = {
             'elevation': EoDataset.add_coordinates(dem, ('y', 'x')),
