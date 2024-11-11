@@ -320,4 +320,153 @@ class ERA5Dataset(EoDataset):
 
         # merge final predictor dataset
         return xr.merge(predictors)
+
+
+class DatasetStacker:
+    """
+    A class to stack xarray datasets along spatial dimensions and optionally compute them.
+    """
+    def __init__(self, xarray_dataset):
+        """
+        Initializes the DatasetStacker with an xarray dataset.
+
+        Parameters:
+        - xarray_dataset (xarray.Dataset): The input dataset to be stacked.
+        """
+        self.xarray_dataset = xarray_dataset
+
+    def stack_spatial_dimensions(self, compute=False):
+        """
+        Stacks the xarray dataset along 'y' and 'x' spatial dimensions and converts it to a Dask array.
+        
+        Parameters:
+        - compute (bool): If True, computes the Dask array immediately.
+        
+        Returns:
+        - dask.array.Array or np.ndarray: The stacked array, either computed or as a Dask array, with shape (spatial, time, variables).
+        """
+        # Stack along 'y' and 'x' dimensions
+        stacked = self.xarray_dataset.stack(spatial=('y', 'x'))
+        dask_arr = stacked.to_array().data
+
+        # Transpose to get (spatial, time, variables) shape
+        stacked_array = dask_arr.T
+
+        # Optionally compute the stacked array if requested
+        if compute:
+            stacked_array = stacked_array.compute()
+
+        # Log the shape of the resulting array
+        LOGGER.info('Shape is in (spatial, time, variables): {}'.format(stacked_array.shape))
+        
+        return stacked_array
+
+class SummaryStatsCalculator:
+    def __init__(self, ds, predictand='temperature', temp_threshold=303.15, precip_threshold=50.0, solar_threshold=0.0):
+        """
+        Initialize the SummaryStatsCalculator with the given dataset and parameters.
+        
+        Parameters:
+        ds (xarray.Dataset): Input dataset with variables including 'dem', 'slope', 'aspect', and the specified predictand.
+        predictand (str): Type of predictand to compute metrics for ('temperature', 'precipitation', or 'solar').
+        temp_threshold (float): Threshold to compute extreme temperature frequency (default is 30°C).
+        precip_threshold (float): Threshold to compute extreme precipitation frequency (default is 50 mm).
+        solar_threshold (float): Threshold to compute extreme solar radiation frequency (default is 0).
+        """
+        self.ds = ds
+        self.predictand = predictand
+        self.temp_threshold = temp_threshold
+        self.precip_threshold = precip_threshold
+        self.solar_threshold = solar_threshold
     
+    def compute_summary_stats(self):
+        """
+        Compute summary statistics for DEM, slope, aspect, and a specified predictand (temperature, precipitation, or solar radiation),
+        reducing over time.
+        
+        Returns:
+        xarray.Dataset: A new dataset with computed summary statistics.
+        """
+        
+        # DEM metrics
+        dem = self.ds['elevation']
+        dem_mean = dem.mean(dim='time')
+        dem_max = dem.max(dim='time')
+        dem_min = dem.min(dim='time')
+        dem_range = dem_max - dem_min
+        dem_variance = dem.var(dim='time')
+        
+        # Select predictand and compute metrics based on the type
+        if self.predictand == 'temperature':
+            variable = self.ds['t2m']
+            pred_max = variable.max(dim='time')
+            pred_min = variable.min(dim='time')
+            pred_range = pred_max - pred_min
+            pred_95th = variable.quantile(0.95, dim='time').squeeze(drop=True).rename('temp_95th')
+            pred_5th = variable.quantile(0.05, dim='time').squeeze(drop=True).rename('temp_5th')
+            pred_extreme_freq = (variable > self.temp_threshold).sum(dim='time').rename('temp_extreme_freq')
+
+        elif self.predictand == 'precipitation':
+            variable = self.ds['precipitation']
+            pred_sum = variable.sum(dim='time').rename('precip_sum')
+            pred_mean = variable.mean(dim='time').rename('precip_mean')
+            pred_max = variable.max(dim='time').rename('precip_max')
+            pred_extreme_freq = (variable > self.precip_threshold).sum(dim='time').rename('precip_extreme_freq')
+
+        elif self.predictand == 'solar':
+            variable = self.ds['solar_radiation']
+            pred_mean = variable.mean(dim='time').rename('solar_mean')
+            pred_max = variable.max(dim='time').rename('solar_max')
+            pred_95th = variable.quantile(0.95, dim='time').squeeze(drop=True).rename('solar_95th')
+            pred_extreme_freq = (variable > self.solar_threshold).sum(dim='time').rename('solar_extreme_freq')
+
+        # Combine metrics for each predictand type and DEM into a list
+        stats_list = [
+            xr.Dataset({'dem_mean': dem_mean}),
+            xr.Dataset({'dem_max': dem_max}),
+            xr.Dataset({'dem_min': dem_min}),
+            xr.Dataset({'dem_range': dem_range}),
+            xr.Dataset({'dem_variance': dem_variance})
+        ]
+        
+        if self.predictand == 'temperature':
+            stats_list.extend([
+                xr.Dataset({'temp_max': pred_max}),
+                xr.Dataset({'temp_min': pred_min}),
+                xr.Dataset({'temp_range': pred_range}),
+                xr.Dataset({'temp_95th': pred_95th}),
+                xr.Dataset({'temp_5th': pred_5th}),
+                xr.Dataset({'temp_extreme_freq': pred_extreme_freq})
+            ])
+        elif self.predictand == 'precipitation':
+            stats_list.extend([
+                xr.Dataset({'precip_sum': pred_sum}),
+                xr.Dataset({'precip_mean': pred_mean}),
+                xr.Dataset({'precip_max': pred_max}),
+                xr.Dataset({'precip_extreme_freq': pred_extreme_freq})
+            ])
+        elif self.predictand == 'solar':
+            stats_list.extend([
+                xr.Dataset({'solar_mean': pred_mean}),
+                xr.Dataset({'solar_max': pred_max}),
+                xr.Dataset({'solar_95th': pred_95th}),
+                xr.Dataset({'solar_extreme_freq': pred_extreme_freq})
+            ])
+        
+        # Merge all datasets, ignoring conflicts with 'compat=override'
+        summary_stats = xr.merge(stats_list, compat='override')
+        
+        return summary_stats
+
+
+def doy_encoding(X, y=None, doy=False):
+
+    # whether to include the day of the year as predictor variable
+    if doy:
+        # add doy to set of predictor variables
+        LOGGER.info('Adding day of the year to predictor variables ...')
+        X = X.assign(EoDataset.encode_doys(X, chunks=X.chunks))
+
+    return X
+
+
