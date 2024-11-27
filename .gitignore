@@ -13,10 +13,10 @@ downscaleml/core/.ipynb_checkpoints
 
 downscaleml/core/__pycache__
 
-downScaleML/downscaleml/main/mlartifacts
+downScaleML/downscaleml/main/mlartifacts/
 
-downScaleML/downscaleml/main/mlruns
+downScaleML/downscaleml/main/mlruns/
 
-downScaleML/downscaleml/main/checkpoints
+downScaleML/downscaleml/main/checkpoints/
 
 
