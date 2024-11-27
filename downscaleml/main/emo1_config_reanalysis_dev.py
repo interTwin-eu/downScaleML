@@ -15,7 +15,7 @@ assert NET in MODELS
 if PREDICTAND is 'pr':
     ERA5="p_REANALYSIS"
 else:
-    ERA5="LPS_Stage2_predictos"
+    ERA5="REANALYSIS"
 
 ROOT = pathlib.Path('/mnt/CEPH_PROJECTS/InterTwin/Climate_Downscaling/hydroModelDownscale/')
 
@@ -26,9 +26,9 @@ ERA5_PATH = ROOT.joinpath(ERA5)
 
 SEAS5_PATH = ROOT
 
-OBS_PATH = ROOT.joinpath('EMO1')
+OBS_PATH = ROOT.joinpath('emo1')
 
-DEM_PATH = ROOT.joinpath('LPS_DEM')
+DEM_PATH = ROOT.joinpath('emo1_DEM')
 
 RESULTS = pathlib.Path('/mnt/CEPH_PROJECTS/InterTwin/Climate_Downscaling/lps/')
 
@@ -72,13 +72,14 @@ CHUNKS = {'time': 365, 'x': 161, 'y': 96}
 #WET_DAY_THRESHOLD=0
 
 if PREDICTAND is 'tasmean':
-    ERA5_P_PREDICTORS = []
+    ERA5_P_PREDICTORS = ['geopotential', 'temperature', 'u_component_of_wind',
+                          'v_component_of_wind', 'specific_humidity']
                           
     #ERA5_P_PREDICTORS = []
     assert all([var in ERA5_P_VARIABLES for var in ERA5_P_PREDICTORS])
     
     # ERA5 predictor variables on single levels
-    ERA5_S_PREDICTORS=["2m_temperature"]
+    ERA5_S_PREDICTORS=["mean_sea_level_pressure", "2m_temperature"]
     
     #ERA5_S_PREDICTORS=["mean_sea_level_pressure", "total_precipitation"]
     assert all([var in ERA5_S_VARIABLES for var in ERA5_S_PREDICTORS])
@@ -127,20 +128,7 @@ else:
 ERA5_PREDICTORS = ERA5_P_PREDICTORS + ERA5_S_PREDICTORS
 
 # ERA5 pressure levels
-ERA5_PLEVELS = []
-
-if PREDICTAND is 'tasmean':
-    ERA5_P_PREDICTORS = []
-                          
-    #ERA5_P_PREDICTORS = []
-    assert all([var in ERA5_P_VARIABLES for var in ERA5_P_PREDICTORS])
-    
-    # ERA5 predictor variables on single levels
-    ERA5_S_PREDICTORS=["2m_temperature"]
-    
-    #ERA5_S_PREDICTORS=["mean_sea_level_pressure", "total_precipitation"]
-    assert all([var in ERA5_S_VARIABLES for var in ERA5_S_PREDICTORS])
-    
+ERA5_PLEVELS = [850]
 
 DEM = True
 if DEM:
@@ -154,23 +142,14 @@ if DEM:
 #NET='AdaBoostRegressor'
 
 CALIB_PERIOD = np.arange(
-    datetime.datetime.strptime('2009-01-30', '%Y-%m-%d').date(),
-    datetime.datetime.strptime('2014-01-03', '%Y-%m-%d').date())
+    datetime.datetime.strptime('1995-01-01', '%Y-%m-%d').date(),
+    datetime.datetime.strptime('2009-01-01', '%Y-%m-%d').date())
 
 start_year = np.min(CALIB_PERIOD).astype(datetime.datetime).year
 end_year = np.max(CALIB_PERIOD).astype(datetime.datetime).year
 
 # validation period: testing
 VALID_PERIOD = np.arange(
-    datetime.datetime.strptime('2015-12-30', '%Y-%m-%d').date(),
-    datetime.datetime.strptime('2016-12-03', '%Y-%m-%d').date())
-
-TEST_PERIOD = np.arange(
-    datetime.datetime.strptime('2014-01-30', '%Y-%m-%d').date(),
-    datetime.datetime.strptime('2015-11-03', '%Y-%m-%d').date())
-
-RESULT_PERIOD = np.arange(
-    datetime.datetime.strptime('2016-01-01', '%Y-%m-%d').date(),
-    datetime.datetime.strptime('2016-12-01', '%Y-%m-%d').date())
-
+    datetime.datetime.strptime('2009-01-01', '%Y-%m-%d').date(),
+    datetime.datetime.strptime('2017-01-01', '%Y-%m-%d').date())
 

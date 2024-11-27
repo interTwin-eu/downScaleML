@@ -1,55 +1,56 @@
-import logging
 import numpy as np
+import matplotlib.pyplot as plt
 import xarray as xr
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
-import matplotlib.pyplot as plt
+import logging
 
-# Module-level logger
 LOGGER = logging.getLogger(__name__)
 
 class ClusteringWorkflow:
-    def __init__(self, data, statistics_dataset, max_k=10):
+    def __init__(self, data, statistics_dataset, min_k=2, max_k=10):
         """
         Initialize the ClusteringWorkflow class.
         
         Parameters:
         - data (array-like): Input data for clustering.
         - statistics_dataset (xarray.Dataset): Dataset containing the statistics and coordinates.
+        - min_k (int): Minimum number of clusters to consider.
         - max_k (int): Maximum number of clusters to consider.
         """
         self.data = data
         self.statistics_dataset = statistics_dataset
+        self.min_k = min_k
         self.max_k = max_k
 
     def silhouette_analysis(self):
         silhouette_scores = []
-        for k in range(2, self.max_k + 1):
+        for k in range(self.min_k, self.max_k + 1):
             kmeans = KMeans(n_clusters=k, random_state=42)
             cluster_labels = kmeans.fit_predict(self.data)
             score = silhouette_score(self.data, cluster_labels)
             silhouette_scores.append(score)
 
         # Plot the Silhouette scores
-        plt.plot(range(2, self.max_k + 1), silhouette_scores, 'bx-')
+        plt.plot(range(self.min_k, self.max_k + 1), silhouette_scores, 'bx-')
         plt.xlabel('Number of Clusters (k)')
         plt.ylabel('Silhouette Score')
         plt.title('Silhouette Analysis for Optimal k')
         plt.savefig("cluster.png")
         
         # Find the optimal k based on the highest Silhouette Score
-        optimal_k_silhouette = silhouette_scores.index(max(silhouette_scores)) + 2
+        optimal_k_silhouette = silhouette_scores.index(max(silhouette_scores)) + self.min_k
         return silhouette_scores, optimal_k_silhouette
 
     def find_optimal_clusters(self):
         wcss = []
-        for k in range(2, self.max_k + 1):
+        for k in range(self.min_k, self.max_k + 1):
             kmeans = KMeans(n_clusters=k, random_state=42)
             kmeans.fit(self.data)
             wcss.append(kmeans.inertia_)
 
         # Plot the Elbow graph
-        plt.plot(range(2, self.max_k + 1), wcss, 'bx-')
+        plt.plot(range(self.min_k, self.max_k + 1), wcss, 'bx-')
         plt.xlabel('Number of Clusters (k)')
         plt.ylabel('WCSS (Inertia)')
         plt.title('Elbow Method for Optimal k')
@@ -58,11 +59,11 @@ class ClusteringWorkflow:
         return wcss
 
     @staticmethod
-    def select_optimal_k(silhouette_scores, wcss_scores):
+    def select_optimal_k(silhouette_scores, wcss_scores, min_k):
         if len(silhouette_scores) != len(wcss_scores):
             raise ValueError("Silhouette scores and WCSS scores must have the same length")
 
-        k_range = list(range(2, 2 + len(silhouette_scores)))
+        k_range = list(range(min_k, min_k + len(silhouette_scores)))
 
         # Normalize the Silhouette scores and invert WCSS scores
         norm_silhouette = (silhouette_scores - np.min(silhouette_scores)) / (np.max(silhouette_scores) - np.min(silhouette_scores))
@@ -95,13 +96,13 @@ class ClusteringWorkflow:
         # Plot Silhouette Scores on the left y-axis
         ax1.set_xlabel('Number of Clusters (k)')
         ax1.set_ylabel('Silhouette Score', color='tab:blue')
-        ax1.plot(range(2, self.max_k + 1), silhouette_scores, 'bx-', label='Silhouette Score', color='tab:blue')
+        ax1.plot(range(self.min_k, self.max_k + 1), silhouette_scores, 'bx-', label='Silhouette Score', color='tab:blue')
         ax1.tick_params(axis='y', labelcolor='tab:blue')
 
         # Create a twin axis for the WCSS plot
         ax2 = ax1.twinx()
         ax2.set_ylabel('WCSS (Inertia)', color='tab:red')
-        ax2.plot(range(2, self.max_k + 1), wcss, 'rx-', label='WCSS (Inertia)', color='tab:red')
+        ax2.plot(range(self.min_k, self.max_k + 1), wcss, 'rx-', label='WCSS (Inertia)', color='tab:red')
         ax2.tick_params(axis='y', labelcolor='tab:red')
 
         plt.title('Silhouette Score vs WCSS (Inertia) for Optimal k')
@@ -121,7 +122,7 @@ class ClusteringWorkflow:
         silhouette_scores, _ = self.silhouette_analysis()
         wcss = self.find_optimal_clusters()
 
-        optimal_k = self.select_optimal_k(silhouette_scores, wcss)
+        optimal_k = self.select_optimal_k(silhouette_scores, wcss, self.min_k)
         LOGGER.info(f"Final Selected Optimal k: {optimal_k}")
 
         cluster_labels = self.apply_kmeans(n_clusters=optimal_k)
