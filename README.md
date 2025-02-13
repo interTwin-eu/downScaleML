@@ -1,4 +1,26 @@
 # downscaleml
+
+# Overview
+
+## Changes in Downscaling Approach
+
+After building the prototype of the downscaling model, significant changes have been introduced to the approach for downscaling the SEAS5 dataset. Instead of performing downscaling in one shot, the new method uses a two-stage downscaling approach:
+
+1. **Stage 1 Downscaling**: Reduces the resolution from 25 km to 5.5 km.
+2. **Stage 2 Downscaling**: Utilizes a patch-based ESRGAN model to further downscale the resolution to 1 km.
+
+This required intensive development, including:
+
+- Building a modified ESRGAN.
+- Training the ESRGAN from scratch.
+- Iterative testing for network architecture and training schema optimization.
+- Hyperparameter optimization (HPO) in Stage 2, which is currently in progress.
+
+The package is under intensive development, and the current distributable file only supports Stage 1 Downscaling and Grid Search. The remaining features are actively being developed.
+
+
+# downscaleml - v0.1.0
+
 First information first! - 'Installing the Package'
 The dist folder contains the **''downscaleml"** package, install it using `pip install downscaleml-0.1.0.tar.gz`. Make sure you already have GDAL dependencies installed in your conda/venv/any_environments. If suppose you face problems with the GDAL installation in your system as well as in your environment, don't worry, I am here for you.
 
