@@ -6,7 +6,7 @@
 
 After building the prototype of the downscaling model, significant changes have been introduced to the approach for downscaling the SEAS5 dataset. Instead of performing downscaling in one shot, the new method uses a two-stage downscaling approach:
 
-1. **Stage 1 Downscaling**: Reduces the resolution from 25 km to 5.5 km.
+1. **Stage 1 Downscaling**: Increases the spatial resolution from 25 km to 5.5 km.
 2. **Stage 2 Downscaling**: Utilizes a patch-based ESRGAN model to further downscale the resolution to 1 km.
 
 This required intensive development, including:
