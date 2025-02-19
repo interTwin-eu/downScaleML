@@ -1,5 +1,6 @@
 channels:
   - conda-forge
+
 dependencies:
   - dask
   - GDAL=3.4.3
@@ -13,3 +14,15 @@ dependencies:
   - matplotlib=3.7.1
   - xgboost
   - lightgbm
+  - pip
+  - pip:
+      - dask-distributed
+      - optuna
+      - optuna-integration
+      - torchmetrics
+      - tensorboard
+      - pytorch_msssim
+      - scikit-image
+      - mlflow
+      - torch==2.6.0+cu126
+      - --index-url https://download.pytorch.org/whl/cu126

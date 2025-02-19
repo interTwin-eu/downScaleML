@@ -1,41 +1,56 @@
 [tool.poetry]
 name = "downscaleml"
-version = "0.1.0"
-description = "Climate downscaling module which acts as input to the WFlow_SBM model developed by EURAC Research, Italy for the intertwin Project"
-authors = ["Suriyah Dhinakaran"]
-license = "GNU GPL V3"
+version = "5.0.0"
+description = "Downscaling Climate Data"
+authors = ["Suriyah Dhinakaran, Daniel Frisinghelli"]
+license = "GPL-3.0-only"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-dask = {extras = ["dataframe"], version = "^2024.5.1"}
-joblib = "^1.4.2"
-GDAL = "3.4.3"
-numpy = "^1.26.4"
-pandas = "^2.2.2"
-scikit-learn = "^1.5.0"
-torch = "^2.3.0"
-xarray = "^2024.5.0"
-matplotlib = "^3.9.0"
-xgboost = "^2.0.3"
-lightgbm = "^4.3.0"
+python = ">=3.10, <3.13"
+numpy = "^1.26.1"
+pandas = "=1.5.3"
+scikit-learn = "^1.3.2"
+setuptools = "^68.2.2"
+torch = "^2.1.0"
+xarray = "=2023.3.0"
+xgboost = "^2.0.1"
+lightgbm = "^4.1.0"
+joblib = "^1.3.2"
+dask = "^2023.10.1"
+matplotlib = "3.7.1"
 cdo = "^1.6.0"
-optuna = "^3.6.1"
-pillow = "^10.3.0"
-plotly = "^5.22.0"
-rioxarray = "^0.15.5"
-wheel = "^0.43.0"
-ipython = "^8.24.0"
+cdsapi = "^0.6.1"
+netcdf4 = "^1.6.5"
+h5py = "^3.10.0"
+h5netcdf = "^1.2.0"
+statsmodels = "^0.14.0"
+mlflow = "^2.20.2"
+optuna = "^4.2.1"
+optuna-integration = "^4.2.1"
+torchmetrics = "^1.6.1"
+tensorboard = "^2.19.0"
+pytorch-msssim = "^1.0.0"
+scikit-image = "^0.25.2"
 
-[tool.poetry.group.dev.dependencies]
-poetry = "^1.8.3"
-pytest = "^8.2.1"
+
+[[tool.poetry.source]]
+name = "torch-cu"
+url = "https://download.pytorch.org/whl/cu126"
+priority = "primary"
+
+
+[[tool.poetry.source]]
+name = "torch_cu"
+url = "https://download.pytorch.org/whl/cu126"
+priority = "supplemental"
+
+
+[[tool.poetry.source]]
+name = "pytorch-gpu-src"
+url = "https://download.pytorch.org/whl/cu126"
+priority = "explicit"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-filterwarnings = [
-    "ignore:pkg_resources is deprecated:DeprecationWarning"
-]
