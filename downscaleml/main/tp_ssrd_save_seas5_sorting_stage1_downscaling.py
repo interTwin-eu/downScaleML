@@ -171,10 +171,10 @@ def main():
         
         # 1. Load and split data
         logger.info('Loading and splitting datasets')
-        X = xr.open_zarr(args.x_path).sel(lat=slice(46, 46.5), lon=slice(10, 10.5)).compute()
+        X = xr.open_zarr(args.x_path).sel(lat=slice(46, 47), lon=slice(10, 12)).compute()
         X = apply_feature_engineering(X, args.target_var)
         
-        y = xr.open_zarr(args.y_path)[args.target_var].sel(lat=slice(46, 46.5), lon=slice(10, 10.5)).compute()
+        y = xr.open_zarr(args.y_path)[args.target_var].sel(lat=slice(46, 47), lon=slice(10, 12)).compute()
 
         X = X.rename({"lat": "y", "lon": "x"})
         y = y.rename({"lat": "y", "lon": "x"})
@@ -277,7 +277,7 @@ def main():
                 month_year = '_'.join(month_year).replace('_', ' ')  # Convert to space-separated
                 month_year = month_year.replace('_', ' ')  # Ensure space separator
                 
-                seas5 = xr.open_zarr(seas5_path).sel(y=slice(46, 46.5), x=slice(10, 10.5)).compute()
+                seas5 = xr.open_zarr(seas5_path).sel(y=slice(46, 47), x=slice(10, 12)).compute()
                 seas5 = apply_feature_engineering(seas5, args.target_var)
 
                 seas5 = seas5.drop_vars(["tp", "q_850", "u_850", "v_850", "z_850"])
