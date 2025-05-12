@@ -280,16 +280,6 @@ def main():
                 seas5 = xr.open_zarr(seas5_path).sel(y=slice(46, 47), x=slice(10, 12)).compute()
                 seas5 = apply_feature_engineering(seas5, args.target_var)
 
-                seas5 = seas5.drop_vars(["tp", "q_850", "u_850", "v_850", "z_850"])
-                seas5['ssrd_lag1'] = seas5['ssrd'].shift(time=1)  # Previous day
-                seas5['ssrd_lag2'] = seas5['ssrd'].shift(time=2)  # Day before yesterday
-                
-                # 3-day moving average (centered=False to use past values only)
-                seas5['ssrd_ma3'] = seas5['ssrd'].rolling(time=3, min_periods=1, center=False).mean()
-                
-                # 7-day moving average
-                seas5['ssrd_ma7'] = seas5['ssrd'].rolling(time=7, min_periods=1, center=False).mean()
-
                 # After loading SEAS5 data
                 seas5 = sort_features_by_name(seas5)
                 
