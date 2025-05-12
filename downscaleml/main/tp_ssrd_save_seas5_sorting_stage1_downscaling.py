@@ -70,6 +70,7 @@ def get_seas5_zarr_paths(seas5_paths):
 def feature_engineering_ssrd(X):
     """Feature engineering for ssrd variable"""
     X = X.drop_vars(["tp", "q_850", "u_850", "v_850", "z_850"])
+    X["ssrd"] = X["ssrd"] * 86400
     X['ssrd_lag1'] = X['ssrd'].shift(time=1)  # Previous day
     X['ssrd_lag2'] = X['ssrd'].shift(time=2)  # Day before yesterday
     
