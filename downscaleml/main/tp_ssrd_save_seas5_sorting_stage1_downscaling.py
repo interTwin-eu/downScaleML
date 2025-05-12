@@ -49,17 +49,14 @@ def get_seas5_zarr_paths(seas5_paths):
         def get_month_year_key(file_path):
             # Extract the month_year part from the filename
             month_year_str = file_path.stem.split('_')[-2:]  # Gets last two parts
-            month_year_str = ' '.join(month_year_str)  # Handle both space and underscore
-            
-            # Clean up any remaining underscores and standardize format
-            month_year_str = month_year_str.replace('_', ' ')
+            month_year_str = '_'.join(month_year_str)  # Join with underscore
             
             # Parse to datetime object for proper sorting
             try:
-                return datetime.strptime(month_year_str, '%B %Y')
+                return datetime.strptime(month_year_str.replace('_', ' '), '%B %Y')
             except ValueError:
                 # Try alternative formats if needed
-                return datetime.strptime(month_year_str.lower().capitalize(), '%B %Y')
+                return datetime.strptime(month_year_str.lower().capitalize().replace('_', ' '), '%B %Y')
         
         zarr_files_sorted = sorted(zarr_files, key=get_month_year_key)
         return [str(f) for f in zarr_files_sorted]
@@ -273,14 +270,13 @@ def main():
         if seas5_paths:
             logger.info(f'Processing {len(seas5_paths)} SEAS5 forecasts')
             for idx, seas5_path in enumerate(seas5_paths):
-                # Extract month_year from the filename
+                # Extract month_year from the filename and ensure underscore separator
                 month_year = Path(seas5_path).stem.split('_')[-2:]  # Gets last two parts
-                month_year = '_'.join(month_year).replace('_', ' ')  # Convert to space-separated
-                month_year = month_year.replace('_', ' ')  # Ensure space separator
+                month_year = '_'.join(month_year)  # Join with underscore
                 
                 seas5 = xr.open_zarr(seas5_path).sel(y=slice(46, 47), x=slice(10, 12)).compute()
                 seas5 = apply_feature_engineering(seas5, args.target_var)
-
+        
                 # After loading SEAS5 data
                 seas5 = sort_features_by_name(seas5)
                 
@@ -295,7 +291,7 @@ def main():
                 
                 # Progress bar for SEAS5 prediction
                 total_models = len(models) * len(seas5.number)
-                with tqdm(total=total_models, desc=f"SEAS5 forecast {month_year}") as pbar:
+                with tqdm(total=total_models, desc=f"SEAS5 forecast {month_year.replace('_', ' ')}") as pbar:
                     for m in range(len(seas5.number)):
                         for (i,j), (model, scaler) in models.items():
                             if i >= num_y or j >= num_x:
@@ -315,7 +311,7 @@ def main():
                 )
                 seas5_out = output_dir / f'{args.target_var}_seas5_{month_year}.zarr'
                 seas5_ds.to_zarr(seas5_out, mode='w')
-                logger.info(f'Saved SEAS5 forecast {month_year} to {seas5_out}')
+                logger.info(f'Saved SEAS5 forecast {month_year.replace("_", " ")} to {seas5_out}')
                 del seas5_ds, seas5_preds, seas5 
                 gc.collect()
         else:
