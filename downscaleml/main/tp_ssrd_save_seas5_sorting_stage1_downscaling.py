@@ -179,9 +179,6 @@ def main():
         X = X.rename({"lat": "y", "lon": "x"})
         y = y.rename({"lat": "y", "lon": "x"})
 
-        X = X.fillna(0)
-        y = y.fillna(0)
-
         X = sort_features_by_name(X)
 
         X_train, X_test = temporal_split(X)
@@ -294,7 +291,6 @@ def main():
                 seas5['ssrd_ma7'] = seas5['ssrd'].rolling(time=7, min_periods=1, center=False).mean()
 
                 # After loading SEAS5 data
-                seas5 = seas5.fillna(0)
                 seas5 = sort_features_by_name(seas5)
                 
                 # Get the number of y and x points in the SEAS5 data
