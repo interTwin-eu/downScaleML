@@ -169,10 +169,10 @@ def main():
         
         # 1. Load and split data
         logger.info('Loading and splitting datasets')
-        X = xr.open_zarr(args.x_path).sel(lat=slice(46, 47), lon=slice(10, 12)).compute()
+        X = xr.open_zarr(args.x_path).sel(lat=slice(42, 51), lon=slice(4, 16)).compute()
         X = apply_feature_engineering(X, args.target_var)
         
-        y = xr.open_zarr(args.y_path)[args.target_var].sel(lat=slice(46, 47), lon=slice(10, 12)).compute()
+        y = xr.open_zarr(args.y_path)[args.target_var].sel(lat=slice(42, 51), lon=slice(4, 16)).compute()
 
         X = X.rename({"lat": "y", "lon": "x"})
         y = y.rename({"lat": "y", "lon": "x"})
@@ -274,7 +274,7 @@ def main():
                 month_year = Path(seas5_path).stem.split('_')[-2:]  # Gets last two parts
                 month_year = '_'.join(month_year)  # Join with underscore
                 
-                seas5 = xr.open_zarr(seas5_path).sel(y=slice(46, 47), x=slice(10, 12)).compute()
+                seas5 = xr.open_zarr(seas5_path).sel(y=slice(42, 51), x=slice(4, 16)).compute()
                 seas5 = apply_feature_engineering(seas5, args.target_var)
         
                 # After loading SEAS5 data
