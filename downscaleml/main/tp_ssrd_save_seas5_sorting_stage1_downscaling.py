@@ -67,7 +67,6 @@ def get_seas5_zarr_paths(seas5_paths):
 def feature_engineering_ssrd(X):
     """Feature engineering for ssrd variable"""
     X = X.drop_vars(["tp", "q_850", "u_850", "v_850", "z_850"])
-    X["ssrd"] = X["ssrd"] * 86400
     X['ssrd_lag1'] = X['ssrd'].shift(time=1)  # Previous day
     X['ssrd_lag2'] = X['ssrd'].shift(time=2)  # Day before yesterday
     
@@ -91,21 +90,29 @@ def feature_engineering_t2m(X):
 def feature_engineering_tp(X):
     """Feature engineering for tp variable"""
     # Keep relevant variables
-    X = X.drop_vars(["ssrd", "t2m", "q_850", "u_850", "v_850", "z_850"])
+    X = X.drop_vars(["q_850", "u_850", "v_850", "z_850"])
+
+    # 1. Precipitation thresholding (values < 0.01mm set to 0)
+    X["tp_thresholded"] = xr.where(X['tp'] < 0.01, 0, X['tp'])
     
     # Lag features
     X['tp_lag1'] = X['tp'].shift(time=1)
     X['tp_lag2'] = X['tp'].shift(time=2)
     
+    # 2. Create binary precipitation mask (1 if precipitation > 0, else 0)
+    X["precip_mask"] = xr.where(X['tp_thresholded'] > 0, 1, 0)
+    
     # Moving averages
     X['tp_ma3'] = X['tp'].rolling(time=3, min_periods=1, center=False).mean()
+    X['tp_ma5'] = X['tp'].rolling(time=5, min_periods=1, center=False).mean()
     X['tp_ma7'] = X['tp'].rolling(time=7, min_periods=1, center=False).mean()
-    
-    # Interaction with topography
-    X['tp_dem_ratio'] = X['tp'] / (X['dem'] + 1e-10)
+
+    X['t2m_t850_interaction'] = X['t2m'] * X['t_850']
+    X['t2m_ssrd_interaction'] = X['t2m'] * X['ssrd']
+    X['lapse_rate_dem'] = (X['t2m'] - X['t_850']) * X['dem']
     
     # Drop unused variables
-    X = X.drop_vars(["dem"])
+    X = X.drop_vars(["dem", "t2m", "ssrd", "t_850"])
     return X
 
 def apply_feature_engineering(X, target_var):
@@ -275,6 +282,7 @@ def main():
                 month_year = '_'.join(month_year)  # Join with underscore
                 
                 seas5 = xr.open_zarr(seas5_path).sel(y=slice(42, 51), x=slice(4, 16)).compute()
+                seas5["ssrd"] = seas5["ssrd"] * 86400
                 seas5 = apply_feature_engineering(seas5, args.target_var)
         
                 # After loading SEAS5 data
