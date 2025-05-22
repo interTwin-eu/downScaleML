@@ -20,3 +20,7 @@ downscaleml/main/mlartifacts/
 downscaleml/main/mlruns/i
 
 downscaleml/main/__pycache__
+
+.env
+
+downscaleml/main/.env

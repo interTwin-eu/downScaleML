@@ -1,28 +1,22 @@
+name: openEO_downScaleML
 channels:
   - conda-forge
-
 dependencies:
-  - dask
-  - GDAL=3.4.3
-  - joblib
-  - numpy
-  - pandas
-  - scikit-learn
-  - setuptools
-  - pytorch
-  - xarray
-  - matplotlib=3.7.1
-  - xgboost
-  - lightgbm
+  - python=3.11.11
   - pip
+
+  # Zarr and Dask stack
+  - zarr==2.13.3
+  - xarray==2024.3.0
+  - numpy==1.26.4
+  - scikit-learn==1.6.1
+  - pandas==2.2.3
+  - tqdm==4.67.1
+  - joblib==1.4.2
+  - lightgbm==4.6.0
+  - distributed==2025.1.0
+  - dask==2025.1.0
+
   - pip:
-      - dask-distributed
-      - optuna
-      - optuna-integration
-      - torchmetrics
-      - tensorboard
-      - pytorch_msssim
-      - scikit-image
-      - mlflow
-      - torch==2.6.0+cu126
-      - --index-url https://download.pytorch.org/whl/cu126
+      - git+https://github.com/interTwin-eu/openeo-processes-dask.git@feature/merge_cubes_issue#egg=openeo-processes-dask[implementations]
+      - git+https://gitlab.inf.unibz.it/earth_observation_public/raster-to-stac.git@update_url#egg=raster-to-stac
