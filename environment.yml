@@ -16,7 +16,3 @@ dependencies:
   - lightgbm==4.6.0
   - distributed==2025.1.0
   - dask==2025.1.0
-
-  - pip:
-      - git+https://github.com/interTwin-eu/openeo-processes-dask.git@feature/merge_cubes_issue#egg=openeo-processes-dask[implementations]
-      - git+https://gitlab.inf.unibz.it/earth_observation_public/raster-to-stac.git@update_url#egg=raster-to-stac

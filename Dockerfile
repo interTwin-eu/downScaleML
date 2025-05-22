@@ -1,33 +1,44 @@
 # Use micromamba base image
 FROM mambaorg/micromamba:latest
 
+USER root
+
 # Set environment variables for micromamba
 ENV MAMBA_DOCKERFILE_ACTIVATE=1 \
     MAMBA_ROOT_PREFIX=/opt/conda \
     PATH=/opt/conda/bin:$PATH
 
-# Create environment from micromamba
-RUN micromamba install -n zarr_downScaleML -y \
-    python=3.10 \
-    xarray \
-    zarr \
-    dask \
-    numpy \
-    pip \
-    -c conda-forge && \
+# Install git
+RUN apt-get update && apt-get install -y git
+
+# Create working directory and fix permissions
+WORKDIR /app
+RUN chown -R mambauser:mambauser /app
+
+USER mambauser
+
+# Copy environment file
+COPY environment.yml .
+
+RUN micromamba env create -f environment.yml && \
     micromamba clean --all --yes
 
-# Activate environment and set it as default
-SHELL ["micromamba", "run", "-n", "zarr_downScaleML", "/bin/bash", "-c"]
+ENV PATH=/opt/conda/envs/openEO_downScaleML/bin:$PATH
 
-# Set working directory
-WORKDIR /app
+# Install pip packages
+RUN pip install openeo-processes-dask
+RUN pip install openeo-processes-dask[implementations]
 
-# Copy your code to the image
-COPY . /app
+# Clone and install openeo-processes-dask from custom branch
+RUN git clone https://github.com/interTwin-eu/openeo-processes-dask.git && \
+    cd openeo-processes-dask && \
+    git checkout feature/merge_cubes_issue && \
+    pip install .
 
-# Install your Python package if needed
-RUN pip install .
+# Clone and install raster-to-stac
+RUN git clone --branch update_url https://gitlab.inf.unibz.it/earth_observation_public/raster-to-stac.git && \
+    cd raster-to-stac && \
+    pip install .
 
-# Set default command
-CMD ["python"]
+# Default command
+CMD ["bash"]
