@@ -19,4 +19,4 @@ downscaleml/main/mlartifacts/
         
 downscaleml/main/mlruns/i
 
-downscaleml/main
+downscaleml/main/__pycache__
