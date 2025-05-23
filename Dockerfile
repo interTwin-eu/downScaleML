@@ -40,5 +40,11 @@ RUN git clone --branch update_url https://gitlab.inf.unibz.it/earth_observation_
     cd raster-to-stac && \
     pip install .
 
+# Install downScaleML from the specified branch
+RUN git clone https://github.com/interTwin-eu/downScaleML.git && \
+    cd downScaleML && \
+    git checkout openEO_downScaleML && \
+    pip install .
+
 # Default command
 CMD ["bash"]
