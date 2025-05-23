@@ -1,0 +1,27 @@
+[project]
+name = "downscaleml"
+version = "0.8.0"
+description = "Climate data downscaling framework using openEO"
+authors = [
+    {name = "Suriyah Dhinakaran"}
+]
+license = {text = "GPL-3.0"}
+readme = "README.md"
+requires-python = "3.11.11"
+dependencies = [
+    "zarr (==2.13.3)",
+    "xarray (==2024.3.0)",
+    "numpy (==1.26.4)",
+    "scikit-learn (==1.6.1)",
+    "pandas (==2.2.3)",
+    "tqdm (==4.67.1)",
+    "joblib (==1.4.2)",
+    "lightgbm (==4.6.0)",
+    "distributed (==2025.1.0)",
+    "dask (==2025.1.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
