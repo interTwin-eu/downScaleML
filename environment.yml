@@ -4,7 +4,7 @@ channels:
 dependencies:
   - python=3.11.11
   - pip
-
+  - pytest
   # Zarr and Dask stack
   - zarr==2.13.3
   - xarray==2024.3.0
