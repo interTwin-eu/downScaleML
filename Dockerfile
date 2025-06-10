@@ -19,6 +19,8 @@ USER mambauser
 
 # Copy environment file
 COPY environment.yml .
+COPY test_requirements.txt .
+
 
 RUN micromamba env create -f environment.yml && \
     micromamba clean --all --yes
@@ -42,6 +44,11 @@ RUN git clone https://github.com/interTwin-eu/downScaleML.git && \
     cd downScaleML && \
     git checkout openEO_downScaleML && \
     pip install .
+
+RUN pip install -r test_requirements.txt
+
+# Copy test files
+COPY tests/ /app/tests/
 
 # Default command
 CMD ["bash"]
