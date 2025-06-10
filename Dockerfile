@@ -35,10 +35,7 @@ RUN git clone https://github.com/interTwin-eu/openeo-processes-dask.git && \
     git checkout feature/merge_cubes_issue && \
     pip install .
 
-# Clone and install raster-to-stac
-RUN git clone --branch update_url https://gitlab.inf.unibz.it/earth_observation_public/raster-to-stac.git && \
-    cd raster-to-stac && \
-    pip install .
+RUN pip install raster2stac
 
 # Install downScaleML from the specified branch
 RUN git clone https://github.com/interTwin-eu/downScaleML.git && \
