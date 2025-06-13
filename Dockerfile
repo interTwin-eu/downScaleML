@@ -35,12 +35,9 @@ RUN git clone https://github.com/interTwin-eu/downScaleML.git && \
 #RUN pip install raster2stac
 RUN pip install raster2stac
 
-ARG GITHUB_TOKEN
-RUN git clone https://${GITHUB_TOKEN}@github.com/interTwin-eu/openeo-processes-dask.git && \
+RUN git clone https://github.com/interTwin-eu/openeo-processes-dask.git && \
     cd openeo-processes-dask && \
     git checkout feature/merge_cubes_issue && \
-    # Force Git to use PAT for submodules (now based on the branch's .gitmodules)
-    git config --global url."https://${GITHUB_TOKEN}@github.com".insteadOf "https://github.com" && \
     git submodule update --init --recursive && \
     pip install .[implementations]
 
