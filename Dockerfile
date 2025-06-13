@@ -35,10 +35,6 @@ RUN git clone https://github.com/interTwin-eu/downScaleML.git && \
 #RUN pip install raster2stac
 RUN pip install raster2stac
 
-# Install pip packages
-RUN pip install openeo-processes-dask
-RUN pip install openeo-processes-dask[implementations]
-
 ARG GITHUB_TOKEN
 RUN git clone https://${GITHUB_TOKEN}@github.com/interTwin-eu/openeo-processes-dask.git && \
     cd openeo-processes-dask && \
@@ -46,9 +42,11 @@ RUN git clone https://${GITHUB_TOKEN}@github.com/interTwin-eu/openeo-processes-d
     # Force Git to use PAT for submodules (now based on the branch's .gitmodules)
     git config --global url."https://${GITHUB_TOKEN}@github.com".insteadOf "https://github.com" && \
     git submodule update --init --recursive && \
-    pip install .
+    pip install .[implementations]
 
 RUN pip install -r test_requirements.txt
+
+RUN pip install s3fs
 
 # Copy test files
 COPY tests/ /app/tests/

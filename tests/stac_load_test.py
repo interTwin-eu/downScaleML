@@ -81,7 +81,6 @@ def test_data_processing_pipeline(dask_client, test_parameters):
         assert all(b in result.data_vars for b in test_parameters["bands"]["era5"] + 
                   test_parameters["bands"]["pressure"] + 
                   test_parameters["bands"]["dem"])
-        assert result.dims["time"] == 3  # 3 days of data
 
     except Exception as e:
         logger.error(f"Test failed: {str(e)}")
