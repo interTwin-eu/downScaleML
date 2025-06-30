@@ -37,9 +37,14 @@ RUN pip install raster2stac
 
 RUN git clone https://github.com/interTwin-eu/openeo-processes-dask.git && \
     cd openeo-processes-dask && \
-    git checkout feature/merge_cubes_issue && \
-    git submodule update --init --recursive && \
+    git checkout feature/sin_cos_doy && \
+    git submodule set-url openeo_processes_dask/specs/openeo-processes https://github.com/suriyahgit/openeo-processes.git && \
+    git submodule update --init && \
+    cd openeo_processes_dask/specs/openeo-processes && \
+    git checkout sin_cos_doy && \
+    cd ../../.. && \
     pip install .[implementations]
+
 
 RUN pip install -r test_requirements.txt
 
