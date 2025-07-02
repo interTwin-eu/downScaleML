@@ -32,19 +32,21 @@ RUN git clone https://github.com/interTwin-eu/downScaleML.git && \
     git checkout openEO_downScaleML && \
     pip install .
 
-#RUN pip install raster2stac
-RUN pip install raster2stac
+# Install raster2stac from the test_cube branch
+RUN git clone https://gitlab.inf.unibz.it/earth_observation_public/raster-to-stac.git && \
+    cd raster-to-stac && \
+    git checkout test_cube && \
+    pip install .
 
 RUN git clone https://github.com/interTwin-eu/openeo-processes-dask.git && \
     cd openeo-processes-dask && \
-    git checkout feature/sin_cos_doy && \
-    git submodule set-url openeo_processes_dask/specs/openeo-processes https://github.com/suriyahgit/openeo-processes.git && \
+    git checkout process/r2s && \
+    git submodule set-url openeo_processes_dask/specs/openeo-processes https://github.com/interTwin-eu/openeo-processes.git && \
     git submodule update --init && \
     cd openeo_processes_dask/specs/openeo-processes && \
-    git checkout sin_cos_doy && \
+    git checkout downScaleML_processes && \
     cd ../../.. && \
     pip install .[implementations]
-
 
 RUN pip install -r test_requirements.txt
 
