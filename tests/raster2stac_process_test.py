@@ -20,7 +20,7 @@ STAC_URLS = {
 def dask_client():
     """Fixture to manage Dask cluster lifecycle"""
     cluster = LocalCluster(
-        n_workers=2,
+        n_workers=14,
         threads_per_worker=1,
         memory_limit='2GB',
         silence_logs=logging.ERROR,
@@ -113,11 +113,12 @@ def test_seas5_processing_pipeline(dask_client, test_parameters):
             description=test_parameters["raster_stac"]["description"],
             write_collection_assets=True,
             keywords=test_parameters["raster_stac"]["keywords"],
-            s3_upload=True,
+            s3_upload=False,
             s3_endpoint_url=test_parameters["raster_stac"]["s3_config"]["endpoint_url"],
             bucket_name=test_parameters["raster_stac"]["s3_config"]["bucket_name"],
             bucket_file_prefix=test_parameters["raster_stac"]["s3_config"]["file_prefix"],
-            post_to_stac=True
+            post_to_stac=False,
+            output_folder="app/test_data/"
         )
         final_result = seas_r2s.execute()
         logger.info("Final merged SEAS5 cube with processing results")
