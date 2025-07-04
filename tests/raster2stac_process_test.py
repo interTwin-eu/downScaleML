@@ -45,7 +45,18 @@ def test_parameters():
             "pressure": ["t_850"],
             "dem": ["dem"]
         },
-        "processing_bands": ["sin_doy", "cos_doy"]  # Expected output bands from sin_cos_doy
+        "processing_bands": ["sin_doy", "cos_doy"],  # Expected output bands from sin_cos_doy
+        "raster_stac": {
+            "uuid": "pytest_001",
+            "collection_url": "https://stac.intertwin.fedcloud.eu/collections/",
+            "description": "Testing raster2stac from client",
+            "keywords": ["interTwin", "Zarr", "test"],
+            "s3_config": {
+                "endpoint_url": "https://objectstore.eodc.eu:2222",
+                "bucket_name": "rucio",
+                "file_prefix": "interTwin_EURAC/"
+            }
+        }
     }
 
 def test_seas5_processing_pipeline(dask_client, test_parameters):
@@ -94,8 +105,21 @@ def test_seas5_processing_pipeline(dask_client, test_parameters):
         # Apply sin_cos_doy processing and merge results
         processed = seas5cube.process("sin_cos_doy", data=seas5cube)
         merged_seas5_cube = seas5cube.merge_cubes(processed)
-        
-        final_result = merged_seas5_cube.execute()
+        seas_r2s = merged_seas5_cube.process(
+            "raster2stac",
+            data=merged_seas5_cube,
+            item_id=f"TEST_CUBE_SEAS5_{test_parameters['raster_stac']['uuid']}",
+            collection_url=test_parameters["raster_stac"]["collection_url"],
+            description=test_parameters["raster_stac"]["description"],
+            write_collection_assets=True,
+            keywords=test_parameters["raster_stac"]["keywords"],
+            s3_upload=True,
+            s3_endpoint_url=test_parameters["raster_stac"]["s3_config"]["endpoint_url"],
+            bucket_name=test_parameters["raster_stac"]["s3_config"]["bucket_name"],
+            bucket_file_prefix=test_parameters["raster_stac"]["s3_config"]["file_prefix"],
+            post_to_stac=True
+        )
+        final_result = seas_r2s.execute()
         logger.info("Final merged SEAS5 cube with processing results")
 
         # Validation
