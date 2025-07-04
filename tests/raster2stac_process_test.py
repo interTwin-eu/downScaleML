@@ -1,4 +1,5 @@
 # tests/test_seas5_data_loading.py
+import os
 import pytest
 import xarray as xr
 from dask.distributed import LocalCluster, Client
