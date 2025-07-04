@@ -15,6 +15,10 @@ RUN apt-get update && apt-get install -y git
 WORKDIR /app
 RUN chown -R mambauser:mambauser /app
 
+# Create a dedicated test directory with proper permissions
+RUN mkdir -p /app/test_data && \
+    chown -R mambauser:mambauser /app/test_data
+
 USER mambauser
 
 # Copy environment file
@@ -35,7 +39,7 @@ RUN git clone https://github.com/interTwin-eu/downScaleML.git && \
 # Install raster2stac from the test_cube branch
 RUN git clone https://gitlab.inf.unibz.it/earth_observation_public/raster-to-stac.git && \
     cd raster-to-stac && \
-    git checkout test_cube && \
+    git checkout chunk_auto_bug && \
     pip install .
 
 RUN git clone https://github.com/interTwin-eu/openeo-processes-dask.git && \

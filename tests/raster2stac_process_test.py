@@ -22,8 +22,6 @@ def dask_client():
     cluster = LocalCluster(
         n_workers=14,
         threads_per_worker=1,
-        memory_limit='2GB',
-        silence_logs=logging.ERROR,
         worker_dashboard_address=False,
         diagnostics_port=None
     )
@@ -101,6 +99,9 @@ def test_seas5_processing_pipeline(dask_client, test_parameters):
         # Merge with DEM
         seas5cube = seas5_remap.merge_cubes(dem_expanded)
         logger.info("SEAS5 cube with DEM merged successfully")
+
+        output_path = "/app/test_data/"
+        zarr_path = os.path.join(output_path, f"{item_id}.zarr")
         
         # Apply sin_cos_doy processing and merge results
         processed = seas5cube.process("sin_cos_doy", data=seas5cube)
@@ -118,17 +119,13 @@ def test_seas5_processing_pipeline(dask_client, test_parameters):
             bucket_name=test_parameters["raster_stac"]["s3_config"]["bucket_name"],
             bucket_file_prefix=test_parameters["raster_stac"]["s3_config"]["file_prefix"],
             post_to_stac=False,
-            output_folder="app/test_data/"
+            output_folder=output_path
         )
         final_result = seas_r2s.execute()
         logger.info("Final merged SEAS5 cube with processing results")
 
-        # Validation
-        dataset_result = final_result.to_dataset(dim="bands")
-        logger.info(f"Final SEAS5 dataset: {dataset_result}")
-
-        # Core assertions
-        assert isinstance(dataset_result, xr.Dataset)
+        assert os.path.exists(zarr_path)
+        logger.info(f".zarr output exists at {zarr_path}")
         
         # Check all original bands are present
         expected_original_bands = (
