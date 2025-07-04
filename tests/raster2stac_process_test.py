@@ -102,7 +102,7 @@ def test_seas5_processing_pipeline(dask_client, test_parameters):
         logger.info("SEAS5 cube with DEM merged successfully")
 
         output_path = "/app/test_data/"
-        zarr_path = os.path.join(output_path, f"{item_id}.zarr")
+        zarr_path = os.path.join(output_path, f"TEST_CUBE_SEAS5_{test_parameters['raster_stac']['uuid']}.zarr")
         
         # Apply sin_cos_doy processing and merge results
         processed = seas5cube.process("sin_cos_doy", data=seas5cube)
