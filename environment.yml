@@ -6,7 +6,7 @@ dependencies:
   - pip
   - pytest
   # Zarr and Dask stack
-  - zarr==2.13.3
+  - zarr<=2.18.7
   - xarray==2024.3.0
   - numpy==1.26.4
   - scikit-learn==1.6.1

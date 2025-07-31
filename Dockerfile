@@ -13,13 +13,9 @@ RUN apt-get update && apt-get install -y git
 
 # Create working directory and fix permissions
 WORKDIR /app
-RUN chown -R mambauser:mambauser /app
 
-# Create a dedicated test directory with proper permissions
-RUN mkdir -p /app/test_data && \
-    chown -R mambauser:mambauser /app/test_data
-
-USER mambauser
+# Create test_data as mambauser directly
+RUN mkdir -p /app/test_data
 
 # Copy environment file
 COPY environment.yml .
