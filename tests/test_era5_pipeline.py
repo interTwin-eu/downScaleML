@@ -14,8 +14,9 @@ logger = logging.getLogger(__name__)
 def dask_client():
     """Fixture to manage Dask cluster lifecycle"""
     cluster = LocalCluster(
-        n_workers=14,
+        n_workers=2,
         threads_per_worker=1,
+        memory_limit='2GB',
         silence_logs=logging.ERROR,
         worker_dashboard_address=False,
         diagnostics_port=None
@@ -46,7 +47,7 @@ def test_parameters():
         },
         "processing_bands": ["sin_doy", "cos_doy"],  # Expected output bands from sin_cos_doy
         "raster_stac": {
-            "uuid": "pytest_001",
+            "uuid": "pytest_era5_001",
             "collection_url": "https://stac.intertwin.fedcloud.eu/collections/",
             "description": "Testing ERA5 raster2stac from client",
             "keywords": ["interTwin", "ERA5", "Zarr", "test"],
@@ -98,8 +99,6 @@ def test_complete_processing_pipeline(dask_client, test_parameters):
         era5_cube = era5_single.merge_cubes(era5_pressure)
         remap = era5_cube.resample_cube_spatial(dem, method="bilinear")
         dem_expanded = dem.resample_cube_temporal(remap)
-        dem_expanded = dem_expanded.rename_dimension(target="y", source="lat")
-        dem_expanded = dem_expanded.rename_dimension(target="x", source="lon")
         cube = remap.merge_cubes(dem_expanded)
         
         # EMO1 renaming and recube
@@ -146,6 +145,33 @@ def test_complete_processing_pipeline(dask_client, test_parameters):
         # Validation
         assert os.path.exists(zarr_path)
         logger.info(f".zarr output exists at {zarr_path}")
+        
+        dataset_result = final_result.to_dataset(dim="bands")
+        logger.info(f"Final merged dataset: {dataset_result}")
+
+        # Core assertions
+        assert isinstance(dataset_result, xr.Dataset)
+        
+        # Check all original bands are present
+        expected_original_bands = (
+            test_parameters["bands"]["era5"] +
+            test_parameters["bands"]["pressure"] +
+            test_parameters["bands"]["dem"] +
+            ["target_dataset"]
+        )
+        
+        # Check processing output bands are present
+        expected_bands = expected_original_bands + test_parameters["processing_bands"]
+        
+        # Verify all expected bands exist in the result
+        assert all(b in dataset_result.data_vars for b in expected_bands)
+        
+        # Verify no duplicate bands
+        assert len(dataset_result.data_vars) == len(expected_bands)
+        
+        # Check temporal dimension
+        assert "time" in dataset_result.dims
+        assert len(dataset_result.time) > 0
         
         logger.info("Pipeline completed successfully with all processing steps")
 
