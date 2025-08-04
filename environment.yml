@@ -1,7 +1,10 @@
 name: openEO_downScaleML
 channels:
   - conda-forge
+  - defaults
 dependencies:
+  - libgcc-ng
+  - libstdcxx-ng
   - python=3.11.11
   - pip
   - pytest

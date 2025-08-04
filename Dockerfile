@@ -9,8 +9,9 @@ ENV MAMBA_DOCKERFILE_ACTIVATE=1 \
     PATH=/opt/conda/bin:$PATH
 
 # Install git and openssh-client (required for SSH)
-RUN apt-get update && apt-get install -y git
-
+RUN apt-get update && \
+    apt-get install -y git openssh-client libstdc++6
+    
 # Create working directory and fix permissions
 WORKDIR /app
 
@@ -24,7 +25,9 @@ COPY test_requirements.txt .
 RUN micromamba env create -f environment.yml && \
     micromamba clean --all --yes
 
+# Set environment PATH and library path
 ENV PATH=/opt/conda/envs/openEO_downScaleML/bin:$PATH
+ENV LD_LIBRARY_PATH=/opt/conda/envs/openEO_downScaleML/lib:$LD_LIBRARY_PATH
 
 # Install downScaleML from the specified branch
 RUN git clone https://github.com/interTwin-eu/downScaleML.git && \
@@ -54,6 +57,14 @@ RUN pip install s3fs
 
 # Copy test files
 COPY tests/ /app/tests/
+
+RUN sed -i -e '/if X_feature_names is None and fitted_feature_names is not None:/,/^[[:space:]]*return/ { /if X_feature_names is None and fitted_feature_names is not None:/b; /^[[:space:]]*return/b; s/^/#/; }' /opt/conda/envs/openEO_downScaleML/lib/python3.11/site-packages/sklearn/utils/validation.py
+
+
+
+#RUN sed -i '/if X_feature_names is None and fitted_feature_names is not None:/!b;n;:a;n;/^ *return/!{s/^/    #/;ba}' \
+#    /opt/conda/envs/openEO_downScaleML/lib/python3.11/site-packages/sklearn/utils/validation.py
+
 
 # Default command
 CMD ["bash"]

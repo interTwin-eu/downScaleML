@@ -17,7 +17,7 @@ setup: build run
 
 ## Run a specific test (make test FILE=/app/tests/my_test.py)
 run:
-	docker run -it $(AWS_ENV_VARS) $(VOLUME_MAP) $(IMAGE_NAME) pytest $(TEST_FILE)
+	docker run -it $(AWS_ENV_VARS) $(VOLUME_MAP) $(IMAGE_NAME) pytest /app/tests/test_downscaleml_pipeline.py -v -s
 
 ## Open an interactive shell with micromamba env activated
 shell:
