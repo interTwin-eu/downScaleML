@@ -60,11 +60,5 @@ COPY tests/ /app/tests/
 
 RUN sed -i -e '/if X_feature_names is None and fitted_feature_names is not None:/,/^[[:space:]]*return/ { /if X_feature_names is None and fitted_feature_names is not None:/b; /^[[:space:]]*return/b; s/^/#/; }' /opt/conda/envs/openEO_downScaleML/lib/python3.11/site-packages/sklearn/utils/validation.py
 
-
-
-#RUN sed -i '/if X_feature_names is None and fitted_feature_names is not None:/!b;n;:a;n;/^ *return/!{s/^/    #/;ba}' \
-#    /opt/conda/envs/openEO_downScaleML/lib/python3.11/site-packages/sklearn/utils/validation.py
-
-
 # Default command
 CMD ["bash"]

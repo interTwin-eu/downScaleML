@@ -1,0 +1,73 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    container:
+      image: mambaorg/micromamba:latest
+      options: --user root
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up environment
+      run: |
+        apt-get update && apt-get install -y git openssh-client libstdc++6
+        mkdir -p /app/test_data
+
+    - name: Copy files
+      run: |
+        cp environment.yml /app/
+        cp test_requirements.txt /app/
+        cp -r tests /app/
+
+    - name: Set up micromamba
+      run: |
+        micromamba env create -f /app/environment.yml
+        micromamba clean --all --yes
+        echo "PATH=/opt/conda/envs/openEO_downScaleML/bin:$PATH" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=/opt/conda/envs/openEO_downScaleML/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+
+    - name: Install dependencies
+      run: |
+        pip install -r /app/test_requirements.txt
+        pip install s3fs
+        git clone https://github.com/interTwin-eu/downScaleML.git && \
+          cd downScaleML && \
+          git checkout openEO_downScaleML && \
+          pip install .
+        git clone https://gitlab.inf.unibz.it/earth_observation_public/raster-to-stac.git && \
+          cd raster-to-stac && \
+          git checkout chunk_auto_bug && \
+          pip install .
+        git clone https://github.com/interTwin-eu/openeo-processes-dask.git && \
+          cd openeo-processes-dask && \
+          git checkout process/r2s && \
+          git submodule set-url openeo_processes_dask/specs/openeo-processes https://github.com/interTwin-eu/openeo-processes.git && \
+          git submodule update --init && \
+          cd openeo_processes_dask/specs/openeo-processes && \
+          git checkout downScaleML_processes && \
+          cd ../../.. && \
+          pip install .[implementations]
+
+    - name: Patch sklearn
+      run: |
+        sed -i -e '/if X_feature_names is None and fitted_feature_names is not None:/,/^[[:space:]]*return/ { /if X_feature_names is None and fitted_feature_names is not None:/b; /^[[:space:]]*return/b; s/^/#/; }' /opt/conda/envs/openEO_downScaleML/lib/python3.11/site-packages/sklearn/utils/validation.py
+
+    - name: Run linter
+      run: |
+        pip install flake8 black isort
+        flake8 /app/tests/
+        black --check /app/tests/
+        isort --check-only /app/tests/
+
+    - name: Run tests
+      run: |
+        pytest /app/tests/ -v -s
