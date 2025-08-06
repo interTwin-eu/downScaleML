@@ -56,11 +56,6 @@ def test_parameters():
             "collection_url": "https://stac.intertwin.fedcloud.eu/collections/",
             "description": "Testing ERA5 raster2stac from client",
             "keywords": ["interTwin", "ERA5", "Zarr", "test"],
-            "s3_config": {
-                "endpoint_url": "https://objectstore.eodc.eu:2222",
-                "bucket_name": "rucio",
-                "file_prefix": "interTwin_EURAC/"
-            }
         }
     }
 
@@ -137,9 +132,6 @@ def test_complete_processing_pipeline(dask_client, test_parameters):
             write_collection_assets=True,
             keywords=test_parameters["raster_stac"]["keywords"],
             s3_upload=False,
-            s3_endpoint_url=test_parameters["raster_stac"]["s3_config"]["endpoint_url"],
-            bucket_name=test_parameters["raster_stac"]["s3_config"]["bucket_name"],
-            bucket_file_prefix=test_parameters["raster_stac"]["s3_config"]["file_prefix"],
             post_to_stac=True,
             output_folder=output_path
         )
