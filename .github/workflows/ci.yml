@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ openEO_downScaleML ]
   pull_request:
-    branches: [ main ]
+    branches: [ openEO_downScaleML ]
 
 jobs:
   lint-and-test:
