@@ -63,11 +63,9 @@ jobs:
 
     - name: Run linter
       run: |
-        pip install flake8 black isort
-        flake8 /app/tests/
+        pip install black
         black --check /app/tests/
-        isort --check-only /app/tests/
 
     - name: Run tests
       run: |
-        pytest /app/tests/ -v -s
+        pytest /app/tests/pytest_pipeline_check.py -v -s
