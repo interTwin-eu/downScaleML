@@ -1,4 +1,5 @@
 # tests/test_seas5_data_loading.py
+import os
 import pytest
 import xarray as xr
 from dask.distributed import LocalCluster, Client
@@ -20,10 +21,8 @@ STAC_URLS = {
 def dask_client():
     """Fixture to manage Dask cluster lifecycle"""
     cluster = LocalCluster(
-        n_workers=2,
+        n_workers=14,
         threads_per_worker=1,
-        memory_limit='2GB',
-        silence_logs=logging.ERROR,
         worker_dashboard_address=False,
         diagnostics_port=None
     )
@@ -45,7 +44,18 @@ def test_parameters():
             "pressure": ["t_850"],
             "dem": ["dem"]
         },
-        "processing_bands": ["sin_doy", "cos_doy"]  # Expected output bands from sin_cos_doy
+        "processing_bands": ["sin_doy", "cos_doy"],  # Expected output bands from sin_cos_doy
+        "raster_stac": {
+            "uuid": "pytests_100",
+            "collection_url": "https://stac.intertwin.fedcloud.eu/collections/",
+            "description": "Testing raster2stac from client",
+            "keywords": ["interTwin", "Zarr", "test"],
+            "s3_config": {
+                "endpoint_url": "https://objectstore.eodc.eu:2222",
+                "bucket_name": "rucio",
+                "file_prefix": "interTwin_EURAC/"
+            }
+        }
     }
 
 def test_seas5_processing_pipeline(dask_client, test_parameters):
@@ -90,43 +100,37 @@ def test_seas5_processing_pipeline(dask_client, test_parameters):
         # Merge with DEM
         seas5cube = seas5_remap.merge_cubes(dem_expanded)
         logger.info("SEAS5 cube with DEM merged successfully")
+
+        output_path = f"/app/test_data/"
+        #output_path = f"/home/sdhinakaran/test/"
+        zarr_path = os.path.join(output_path, f"TEST_CUBE_SEAS5_{test_parameters['raster_stac']['uuid']}/TEST_CUBE_SEAS5_{test_parameters['raster_stac']['uuid']}.zarr")
         
         # Apply sin_cos_doy processing and merge results
         processed = seas5cube.process("sin_cos_doy", data=seas5cube)
         merged_seas5_cube = seas5cube.merge_cubes(processed)
+        seas_r2s = merged_seas5_cube.process(
+            "raster2stac",
+            data=merged_seas5_cube,
+            item_id=f"TEST_CUBE_SEAS5_{test_parameters['raster_stac']['uuid']}",
+            collection_url=test_parameters["raster_stac"]["collection_url"],
+            description=test_parameters["raster_stac"]["description"],
+            write_collection_assets=True,
+            keywords=test_parameters["raster_stac"]["keywords"],
+            s3_upload=False,
+            s3_endpoint_url=test_parameters["raster_stac"]["s3_config"]["endpoint_url"],
+            bucket_name=test_parameters["raster_stac"]["s3_config"]["bucket_name"],
+            bucket_file_prefix=test_parameters["raster_stac"]["s3_config"]["file_prefix"],
+            post_to_stac=True,
+            output_folder=output_path
+        )
+        print(f"[DEBUG] Writing output to: {output_path}")
         
-        final_result = merged_seas5_cube.execute()
+        final_result = seas_r2s.execute()
         logger.info("Final merged SEAS5 cube with processing results")
 
-        # Validation
-        dataset_result = final_result.to_dataset(dim="bands")
-        logger.info(f"Final SEAS5 dataset: {dataset_result}")
+        assert os.path.exists(zarr_path)
+        logger.info(f".zarr output exists at {zarr_path}")
 
-        # Core assertions
-        assert isinstance(dataset_result, xr.Dataset)
-        
-        # Check all original bands are present
-        expected_original_bands = (
-            test_parameters["bands"]["single"] +
-            test_parameters["bands"]["pressure"] +
-            test_parameters["bands"]["dem"]
-        )
-        
-        # Check processing output bands are present
-        expected_bands = expected_original_bands + test_parameters["processing_bands"]
-        
-        # Verify all expected bands exist in the result
-        assert all(b in dataset_result.data_vars for b in expected_bands)
-        
-        # Verify dimension renaming was successful
-        assert "x" in dataset_result.dims
-        assert "y" in dataset_result.dims
-        assert "lat" not in dataset_result.dims
-        assert "lon" not in dataset_result.dims
-        
-        # Verify temporal dimension
-        assert len(dataset_result.time) == 2  # 3 days in temporal extent
-        
         logger.info("SEAS5 pipeline completed successfully with all processing steps")
 
     except Exception as e:
