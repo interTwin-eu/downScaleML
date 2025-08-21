@@ -1,62 +1,171 @@
-# downscaleml
+# downScaleML: openEO-enabled Downscaling Pipeline for Climate Data
 
-# Overview
+````markdown
 
-## Changes in Downscaling Approach
+This repository provides an openEO-based, Docker-compatible, reproducible testing framework for downscaling Earth Observation (EO) data. It supports a modular data processing and machine learning pipeline for climate data—powered by STAC, Dask, and LightGBM. The tests are designed to validate processing and modeling logic using both public and restricted datasets.
 
-After building the prototype of the downscaling model, significant changes have been introduced to the approach for downscaling the SEAS5 dataset. Instead of performing downscaling in one shot, the new method uses a two-stage downscaling approach:
+---
 
-1. **Stage 1 Downscaling**: Increases the spatial resolution from 25 km to 5.5 km.
-2. **Stage 2 Downscaling**: Utilizes a patch-based ESRGAN model to further downscale the resolution to 1 km.
+## 📦 Repository Features
 
-This required intensive development, including:
+- **openEO-compatible test pipelines** using [openeo-processes-dask](https://github.com/Open-EO/openeo-processes-dask)
+- **STAC-based data loading** for ERA5, SEAS5, DEM, and EMO1 products
+- **Pixel-wise regression modeling** using LightGBM
+- **Docker-based isolated runtime** with all dependencies
+- **Flexible Makefile-based automation**
+- **AWS-secured workflows for SEAS5 datasets**
 
-- Building a modified ESRGAN.
-- Training the ESRGAN from scratch.
-- Iterative testing for network architecture and training schema optimization.
-- Hyperparameter optimization (HPO) in Stage 2, which is currently in progress.
+---
 
-The package is under intensive development, and the current distributable file only supports Stage 1 Downscaling and Grid Search. The remaining features are actively being developed.
+## 📂 Dataset Summary
+
+| Dataset       | Access       | Spatial Extent                      | Temporal Extent             | Notes                                 |
+|---------------|--------------|-------------------------------------|-----------------------------|---------------------------------------|
+| ERA5          | Public       | 2°E–20°E, 40°N–52°N (Alps region)   | 2000–2020 (daily)           | Used in open pytests                  |
+| SEAS5         | Requires AWS | Same as ERA5                        | 12 Inits(Aug '21 - July '22)| Used in closed pytests only           |
+| EMO1, DEM     | Public       | Same as ERA5                        | 2000–2022 used              | EMO1 contains downstream targets      |
+
+---
+````
+## 🚀 Quick Start
+
+### 🐳 Run with Docker (Recommended)
+
+#### 1. Build the Docker Image and automatically run public pytest
+
+```bash
+make setup 
+````
+
+This will build the DockerFile and run the  pre-processing and downScaling pipeline using:
+
+```
+/app/tests/test_downscaleml_pipeline.py
+```
 
 
-# downscaleml - v0.1.0
+#### 2. Run in an Interactive Shell
 
-First information first! - 'Installing the Package'
-The dist folder contains the **''downscaleml"** package, install it using `pip install downscaleml-0.1.0.tar.gz`. Make sure you already have GDAL dependencies installed in your conda/venv/any_environments. If suppose you face problems with the GDAL installation in your system as well as in your environment, don't worry, I am here for you.
+```bash
+make shell
+```
 
-This package requires GDAL==3.4.3. 
+You’ll drop into a Docker shell with the micromamba environment pre-activated.
 
-Follow this link to keep your GDAL installation clean and working:
-https://mothergeo-py.readthedocs.io/en/latest/development/how-to/gdal-ubuntu-pkg.html
+#### 3. Clean Docker Containers
 
-You could also probably face a problem similar to what i faced, after installation of GDAL, it's the **libstdc++.so.6** linkage problem. This is to do with either **path linking** or **file missing in the directory**. This file has to be found in your system and to be linked with the virtual environment you are working. This can be done by just following **stackoverflow**. I can drop a little clue, which can help you in linking, kindly change the paths relative to your system.
-`ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /home/anavani/anaconda3/envs/dmcgb/bin/../lib/libstdc++.so.6` 
+```bash
+make clean
+```
 
-You could also follow compatibility issue beterrn GDAL and Numpy or GDAL array now, you could arrest this issue by following the process:-
+---
 
-`pip uninstall gdal`
-`pip install numpy`
-`pip install GDAL==$(gdal-config --version) --global-option=build_ext --global-option="-I/usr/include/gdal"`
+## 🔐 Running Closed Tests (with SEAS5 data)
 
-# Recommended steps to get going!
+Some tests require access to SEAS5 data through AWS-authenticated STAC endpoints. These tests will only work **if valid AWS credentials are provided.**
 
-1. Clone the git project in your local.
-2. `pip install poetry` in your virtual environment
-3. `poetry install` in the project local with the same local environment
+### Precondition:
 
-## How to effectively use the package?
+Set your AWS credentials as environment variables:
 
-The data is not provided in this package, the paths for the input-output data is provided in the `downscaleml/main/config.py`. You can make necessary changes here to reflect elsewhere in the project.
+```bash
+export AWS_ACCESS_KEY_ID=your_key
+export AWS_SECRET_ACCESS_KEY=your_secret
+```
 
-Modify and use the script `/scripts/run_model.sh` to have control with the important parameters and the model output.
+Then, run:
 
-To extract the best hyperparameter for any given downscaling model, run the `downScaleML/downscaleml
-/main/grid_search_downScale.py`, by tweaking the `combination` parameter in the `downscaleml/main/config.py`, one can control the running time to fetch the best hyperparameter. The combination parameter controls the randomised reduced grid size for optimised run time of hyperparameter search.
+```bash
+make run TEST_FILE=/app/tests/pytest_A.py
+```
 
-This script `downscaleml/main/preprocessing/combined_preprocess_CERRA.py` preprocesses CERRA (Copernicus European Regional Reanalysis) data by aggregating it to daily data. It supports reprojection and resampling to a target grid, with specific adjustments for temperature and precipitation data.
+---
 
-Example for running this scirpt: `python combined_preprocess_CERRA.py --source /path/to/source --target /path/to/target --reproject --variable 2m_temperature`
+## 🧪 Test Coverage
 
-Similarly the script `downscaleml/main/preprocessing/combined_preprocess_ERA5.py` preprocesses ERA-5 (European Reanalysis) data by aggregating it to daily data. It supports reprojection and resampling to a target grid, with specific adjustments for temperature and precipitation data.
+### ✅ `test_downscaleml_pipeline.py`
 
-Example for running this scirpt: `python preprocess_era5.py --source /path/to/source --target /path/to/target --reproject --variable 2m_temperature`
+* Loads open ERA5, DEM, and EMO1 datasets via STAC
+* Performs resampling, cube merging, and `sin_cos_doy` feature expansion
+* Saves output as `.zarr` and registers with raster2stac
+* Trains pixel-based LightGBM models for the target variable
+* Validates predictions and saves them as Zarr
+
+### 🔐 `pytest_A.py` (closed tests)
+
+* Same workflow as above, but includes SEAS5 datasets
+* Requires valid AWS credentials
+
+---
+
+## 🛠️ Components Used
+
+* **[downScaleML](https://github.com/interTwin-eu/downScaleML)**: core downscaling package
+* **[raster2stac](https://gitlab.inf.unibz.it/earth_observation_public/raster-to-stac)**: Zarr-to-STAC converter
+* **[openeo-processes-dask](https://github.com/interTwin-eu/openeo-processes-dask)**: local execution of openEO processes
+* **LightGBM + scikit-learn**: pixel-based regression models
+* **Dask**: parallel computation backend
+* **Micromamba**: lightweight conda environment manager
+
+---
+
+## 🧬 Environment Setup (outside Docker, optional)
+
+```bash
+micromamba env create -f environment.yml
+micromamba activate openEO_downScaleML
+pip install -r test_requirements.txt
+pytest tests/test_downscaleml_pipeline.py
+```
+
+---
+
+## 📁 Project Structure
+
+```text
+.
+├── Dockerfile
+├── Makefile
+├── environment.yml
+├── test_requirements.txt
+├── tests/
+│   ├── test_downscaleml_pipeline.py   # open test pipeline
+│   ├── pytest_A.py                    # closed test pipeline (requires AWS)
+│   └── ...
+└── app/
+    └── test_data/                     # Output and intermediate results
+```
+
+---
+
+## 🔍 Notes
+
+* The `sin_cos_doy` and `raster2stac` operations are registered openEO processes from `openeo-processes-dask`.
+* The `.zarr` and STAC metadata output are stored in `/app/test_data/`.
+* `pytest_A.py` and any reference to SEAS5 require valid AWS credentials.
+
+---
+
+## 📝 License
+
+Distributed under an open-source license aligned with interTwin project guidelines.
+
+---
+
+## 🤝 Acknowledgements
+
+This work is part of the **[interTwin](https://intertwin.eu/)** project, and integrates components from the broader openEO ecosystem.
+
+```
+
+---
+
+Let me know if you'd like:
+
+- A `CONTRIBUTING.md`
+- CI badge for GitHub Actions
+- Diagram of the pipeline (markdown or image)
+- One-liner install command using `Makefile`
+
+I can also generate a logo-style header if you're prepping for a public repo.
+```
