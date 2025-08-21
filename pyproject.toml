@@ -1,6 +1,6 @@
 [project]
 name = "downscaleml"
-version = "0.8.0"
+version = "0.9.0"
 description = "Climate data downscaling framework using openEO"
 authors = [
     {name = "Suriyah Dhinakaran"}
