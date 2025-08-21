@@ -10,7 +10,7 @@ This repository provides an openEO-based, Docker-compatible, reproducible testin
 
 - **openEO-compatible test pipelines** using [openeo-processes-dask](https://github.com/Open-EO/openeo-processes-dask)
 - **STAC-based data loading** for ERA5, SEAS5, DEM, and EMO1 products
-- **Pixel-wise regression modeling** using LightGBM
+- **Hybrid Improved Precipitation downscaling framework** using LightGBM
 - **Docker-based isolated runtime** with all dependencies
 - **Flexible Makefile-based automation**
 - **AWS-secured workflows for SEAS5 datasets**
@@ -156,16 +156,4 @@ Distributed under an open-source license aligned with interTwin project guidelin
 
 This work is part of the **[interTwin](https://intertwin.eu/)** project, and integrates components from the broader openEO ecosystem.
 
-```
-
----
-
-Let me know if you'd like:
-
-- A `CONTRIBUTING.md`
-- CI badge for GitHub Actions
-- Diagram of the pipeline (markdown or image)
-- One-liner install command using `Makefile`
-
-I can also generate a logo-style header if you're prepping for a public repo.
 ```
