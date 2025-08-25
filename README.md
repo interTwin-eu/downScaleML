@@ -155,5 +155,3 @@ Distributed under an open-source license aligned with interTwin project guidelin
 ## 🤝 Acknowledgements
 
 This work is part of the **[interTwin](https://intertwin.eu/)** project, and integrates components from the broader openEO ecosystem.
-
-```
