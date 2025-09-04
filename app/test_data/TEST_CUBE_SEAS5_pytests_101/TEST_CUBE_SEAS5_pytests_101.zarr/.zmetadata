@@ -1,0 +1,399 @@
+{
+    "metadata": {
+        ".zattrs": {
+            "CDI": "Climate Data Interface version 1.9.8 (https://mpimet.mpg.de/cdi)",
+            "CDO": "Climate Data Operators version 1.9.8 (https://mpimet.mpg.de/cdo)",
+            "Conventions": "CF-1.5",
+            "GDAL": "GDAL 3.0.4, released 2020/01/28",
+            "GDAL_AREA_OR_POINT": "Area",
+            "NCO": "netCDF Operators version 4.9.2 (Homepage = http://nco.sf.net, Code = http://github.com/nco/nco)",
+            "crs": "EPSG:4326",
+            "history": "Fri Nov 20 14:22:33 2020: ncks -A -v lat,lon /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min.nc /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/RECUT/elv_European_01min.nc\nFri Nov 20 14:22:32 2020: cdo -invertlat tmp_2.nc /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/RECUT/elv_European_01min.nc\nFri Nov 20 14:22:32 2020: GDAL CreateCopy( tmp_2.nc, ... )",
+            "history_of_appended_files": "Fri Nov 20 14:22:33 2020: Appended file /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min.nc had following \"history\" attribute:\nWed Nov 18 13:58:11 2020: ncks -A -v lat,lon /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min_BeforeCorrection.nc /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min.nc\nWed Nov 18 13:57:42 2020: ncks -A -v lat,lon /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min_BeforeCorrection.nc /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min.nc\nWed Nov 18 13:57:42 2020: cdo -invertlat tmp_5.nc /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min.nc\nWed Nov 18 13:57:42 2020: GDAL CreateCopy( tmp_5.nc, ... )\n"
+        },
+        ".zgroup": {
+            "zarr_format": 2
+        },
+        "cos_doy/.zarray": {
+            "chunks": [
+                2,
+                36,
+                30,
+                30
+            ],
+            "compressor": {
+                "blocksize": 0,
+                "clevel": 5,
+                "cname": "lz4",
+                "id": "blosc",
+                "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+                2,
+                51,
+                30,
+                30
+            ],
+            "zarr_format": 2
+        },
+        "cos_doy/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+                "time",
+                "number",
+                "y",
+                "x"
+            ],
+            "coordinates": "spatial_ref"
+        },
+        "dem/.zarray": {
+            "chunks": [
+                2,
+                36,
+                30,
+                30
+            ],
+            "compressor": {
+                "blocksize": 0,
+                "clevel": 5,
+                "cname": "lz4",
+                "id": "blosc",
+                "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+                2,
+                51,
+                30,
+                30
+            ],
+            "zarr_format": 2
+        },
+        "dem/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+                "time",
+                "number",
+                "y",
+                "x"
+            ],
+            "coordinates": "spatial_ref"
+        },
+        "number/.zarray": {
+            "chunks": [
+                51
+            ],
+            "compressor": {
+                "blocksize": 0,
+                "clevel": 5,
+                "cname": "lz4",
+                "id": "blosc",
+                "shuffle": 1
+            },
+            "dtype": "<i4",
+            "fill_value": null,
+            "filters": null,
+            "order": "C",
+            "shape": [
+                51
+            ],
+            "zarr_format": 2
+        },
+        "number/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+                "number"
+            ],
+            "long_name": "ensemble_member"
+        },
+        "sin_doy/.zarray": {
+            "chunks": [
+                2,
+                36,
+                30,
+                30
+            ],
+            "compressor": {
+                "blocksize": 0,
+                "clevel": 5,
+                "cname": "lz4",
+                "id": "blosc",
+                "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+                2,
+                51,
+                30,
+                30
+            ],
+            "zarr_format": 2
+        },
+        "sin_doy/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+                "time",
+                "number",
+                "y",
+                "x"
+            ],
+            "coordinates": "spatial_ref"
+        },
+        "spatial_ref/.zarray": {
+            "chunks": [],
+            "compressor": null,
+            "dtype": "<i8",
+            "fill_value": null,
+            "filters": null,
+            "order": "C",
+            "shape": [],
+            "zarr_format": 2
+        },
+        "spatial_ref/.zattrs": {
+            "GeoTransform": "11.0 0.01666666666666572 0.0 46.5 0.0 -0.01666666666666572",
+            "_ARRAY_DIMENSIONS": [],
+            "crs_wkt": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]",
+            "geographic_crs_name": "WGS 84",
+            "grid_mapping_name": "latitude_longitude",
+            "horizontal_datum_name": "World Geodetic System 1984",
+            "inverse_flattening": 298.257223563,
+            "longitude_of_prime_meridian": 0.0,
+            "prime_meridian_name": "Greenwich",
+            "reference_ellipsoid_name": "WGS 84",
+            "semi_major_axis": 6378137.0,
+            "semi_minor_axis": 6356752.314245179,
+            "spatial_ref": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]"
+        },
+        "ssrd/.zarray": {
+            "chunks": [
+                2,
+                36,
+                30,
+                30
+            ],
+            "compressor": {
+                "blocksize": 0,
+                "clevel": 5,
+                "cname": "lz4",
+                "id": "blosc",
+                "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+                2,
+                51,
+                30,
+                30
+            ],
+            "zarr_format": 2
+        },
+        "ssrd/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+                "time",
+                "number",
+                "y",
+                "x"
+            ],
+            "coordinates": "spatial_ref"
+        },
+        "t2m/.zarray": {
+            "chunks": [
+                2,
+                36,
+                30,
+                30
+            ],
+            "compressor": {
+                "blocksize": 0,
+                "clevel": 5,
+                "cname": "lz4",
+                "id": "blosc",
+                "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+                2,
+                51,
+                30,
+                30
+            ],
+            "zarr_format": 2
+        },
+        "t2m/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+                "time",
+                "number",
+                "y",
+                "x"
+            ],
+            "coordinates": "spatial_ref"
+        },
+        "t_850/.zarray": {
+            "chunks": [
+                2,
+                36,
+                30,
+                30
+            ],
+            "compressor": {
+                "blocksize": 0,
+                "clevel": 5,
+                "cname": "lz4",
+                "id": "blosc",
+                "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+                2,
+                51,
+                30,
+                30
+            ],
+            "zarr_format": 2
+        },
+        "t_850/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+                "time",
+                "number",
+                "y",
+                "x"
+            ],
+            "coordinates": "spatial_ref"
+        },
+        "time/.zarray": {
+            "chunks": [
+                2
+            ],
+            "compressor": {
+                "blocksize": 0,
+                "clevel": 5,
+                "cname": "lz4",
+                "id": "blosc",
+                "shuffle": 1
+            },
+            "dtype": "<i8",
+            "fill_value": null,
+            "filters": null,
+            "order": "C",
+            "shape": [
+                2
+            ],
+            "zarr_format": 2
+        },
+        "time/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+                "time"
+            ],
+            "calendar": "proleptic_gregorian",
+            "long_name": "time",
+            "units": "days since 2021-08-01 00:00:00"
+        },
+        "tp/.zarray": {
+            "chunks": [
+                2,
+                36,
+                30,
+                30
+            ],
+            "compressor": {
+                "blocksize": 0,
+                "clevel": 5,
+                "cname": "lz4",
+                "id": "blosc",
+                "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+                2,
+                51,
+                30,
+                30
+            ],
+            "zarr_format": 2
+        },
+        "tp/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+                "time",
+                "number",
+                "y",
+                "x"
+            ],
+            "coordinates": "spatial_ref"
+        },
+        "x/.zarray": {
+            "chunks": [
+                30
+            ],
+            "compressor": {
+                "blocksize": 0,
+                "clevel": 5,
+                "cname": "lz4",
+                "id": "blosc",
+                "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+                30
+            ],
+            "zarr_format": 2
+        },
+        "x/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+                "x"
+            ],
+            "crs": "EPSG:4326",
+            "resolution": 0.01666666666666572,
+            "units": "degrees_east"
+        },
+        "y/.zarray": {
+            "chunks": [
+                30
+            ],
+            "compressor": {
+                "blocksize": 0,
+                "clevel": 5,
+                "cname": "lz4",
+                "id": "blosc",
+                "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+                30
+            ],
+            "zarr_format": 2
+        },
+        "y/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+                "y"
+            ],
+            "crs": "EPSG:4326",
+            "resolution": -0.01666666666666572,
+            "units": "degrees_north"
+        }
+    },
+    "zarr_consolidated_format": 1
+}

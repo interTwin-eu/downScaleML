@@ -1,0 +1,8 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "x"
+    ],
+    "crs": "EPSG:4326",
+    "resolution": 0.01666666666666572,
+    "units": "degrees_east"
+}

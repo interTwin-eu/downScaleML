@@ -1,0 +1,11 @@
+{
+    "CDI": "Climate Data Interface version 1.9.8 (https://mpimet.mpg.de/cdi)",
+    "CDO": "Climate Data Operators version 1.9.8 (https://mpimet.mpg.de/cdo)",
+    "Conventions": "CF-1.5",
+    "GDAL": "GDAL 3.0.4, released 2020/01/28",
+    "GDAL_AREA_OR_POINT": "Area",
+    "NCO": "netCDF Operators version 4.9.2 (Homepage = http://nco.sf.net, Code = http://github.com/nco/nco)",
+    "crs": "EPSG:4326",
+    "history": "Fri Nov 20 14:22:33 2020: ncks -A -v lat,lon /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min.nc /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/RECUT/elv_European_01min.nc\nFri Nov 20 14:22:32 2020: cdo -invertlat tmp_2.nc /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/RECUT/elv_European_01min.nc\nFri Nov 20 14:22:32 2020: GDAL CreateCopy( tmp_2.nc, ... )",
+    "history_of_appended_files": "Fri Nov 20 14:22:33 2020: Appended file /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min.nc had following \"history\" attribute:\nWed Nov 18 13:58:11 2020: ncks -A -v lat,lon /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min_BeforeCorrection.nc /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min.nc\nWed Nov 18 13:57:42 2020: ncks -A -v lat,lon /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min_BeforeCorrection.nc /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min.nc\nWed Nov 18 13:57:42 2020: cdo -invertlat tmp_5.nc /hugetmp/NOT_Permanent/LDD/LDD_BOX/res/CHECKED/ldd_European_01min.nc\nWed Nov 18 13:57:42 2020: GDAL CreateCopy( tmp_5.nc, ... )\n"
+}

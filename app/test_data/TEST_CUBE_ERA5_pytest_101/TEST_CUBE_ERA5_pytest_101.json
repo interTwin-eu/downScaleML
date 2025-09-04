@@ -1,0 +1,170 @@
+{
+    "type": "Collection",
+    "id": "TEST_CUBE_ERA5_pytest_101",
+    "stac_version": "1.0.0",
+    "description": "Testing ERA5 raster2stac from client",
+    "links": [
+        {
+            "rel": "items",
+            "href": "https://stac.intertwin.fedcloud.eu/collections/TEST_CUBE_ERA5_pytest_101/items",
+            "type": "application/json"
+        },
+        {
+            "rel": "parent",
+            "href": "https://stac.intertwin.fedcloud.eu",
+            "type": "application/json"
+        },
+        {
+            "rel": "self",
+            "href": "https://stac.intertwin.fedcloud.eu/collections/TEST_CUBE_ERA5_pytest_101",
+            "type": "application/json"
+        },
+        {
+            "rel": "root",
+            "href": "https://stac.intertwin.fedcloud.eu",
+            "type": "application/json"
+        }
+    ],
+    "keywords": [
+        "interTwin",
+        "ERA5",
+        "Zarr",
+        "test"
+    ],
+    "providers": [
+        {
+            "name": "Eurac Research - Institute for Earth Observation",
+            "url": "http://www.eurac.edu",
+            "roles": [
+                "processor"
+            ]
+        }
+    ],
+    "stac_extensions": [
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+    ],
+    "extent": {
+        "spatial": {
+            "bbox": [
+                [
+                    11.0,
+                    46.00000000000003,
+                    11.499999999999972,
+                    46.5
+                ]
+            ]
+        },
+        "temporal": {
+            "interval": [
+                [
+                    "2018-01-01T00:00:00Z",
+                    "2018-01-31T00:00:00Z"
+                ]
+            ]
+        }
+    },
+    "license": "Apache-2.0",
+    "assets": {
+        "data": {
+            "href": "/app/test_data/TEST_CUBE_ERA5_pytest_101/TEST_CUBE_ERA5_pytest_101.zarr",
+            "type": "application/vnd+zarr",
+            "proj:epsg": 4326,
+            "proj:geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            11.0,
+                            46.00000000000003
+                        ],
+                        [
+                            11.499999999999972,
+                            46.00000000000003
+                        ],
+                        [
+                            11.499999999999972,
+                            46.5
+                        ],
+                        [
+                            11.0,
+                            46.5
+                        ],
+                        [
+                            11.0,
+                            46.00000000000003
+                        ]
+                    ]
+                ]
+            },
+            "proj:bbox": [
+                11.0,
+                46.00000000000003,
+                11.499999999999972,
+                46.5
+            ],
+            "proj:shape": [
+                30,
+                30
+            ],
+            "proj:transform": [
+                0.01666666666666572,
+                0.0,
+                11.0,
+                0.0,
+                -0.01666666666666572,
+                46.5,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "proj:projjson": {
+                "$schema": "https://proj.org/schemas/v0.7/projjson.schema.json",
+                "type": "GeographicCRS",
+                "name": "WGS 84",
+                "datum": {
+                    "type": "GeodeticReferenceFrame",
+                    "name": "World Geodetic System 1984",
+                    "ellipsoid": {
+                        "name": "WGS 84",
+                        "semi_major_axis": 6378137,
+                        "inverse_flattening": 298.257223563
+                    }
+                },
+                "coordinate_system": {
+                    "subtype": "ellipsoidal",
+                    "axis": [
+                        {
+                            "name": "Geodetic latitude",
+                            "abbreviation": "Lat",
+                            "direction": "north",
+                            "unit": "degree"
+                        },
+                        {
+                            "name": "Geodetic longitude",
+                            "abbreviation": "Lon",
+                            "direction": "east",
+                            "unit": "degree"
+                        }
+                    ]
+                },
+                "id": {
+                    "authority": "EPSG",
+                    "code": 4326
+                }
+            },
+            "proj:wkt2": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]",
+            "xarray:open_kwargs": {
+                "chunks": {},
+                "engine": "zarr"
+            },
+            "xarray:storage_options": {
+                "client_kwargs": {
+                    "trust_env": true
+                }
+            },
+            "roles": [
+                "data"
+            ]
+        }
+    }
+}
