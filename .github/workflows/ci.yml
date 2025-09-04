@@ -20,7 +20,7 @@ jobs:
     - name: Set up environment
       run: |
         apt-get update && apt-get install -y git openssh-client libstdc++6
-        mkdir -p /app/test_data
+        mkdir -p /app/test_data /app/test_data/results
 
     - name: Copy files
       run: |
@@ -66,6 +66,16 @@ jobs:
         pip install black
         black --check /app/tests/
 
+    - name: Create test data directories
+      run: |
+        mkdir -p /app/test_data/results
+        chmod -R 777 /app/test_data  # Ensure write permissions
+
     - name: Run tests
       run: |
-        pytest /app/tests/pytest_pipeline_check.py -v -s
+        cd /app  # Change to app directory where test_data exists
+        pytest tests/pytest_pipeline_check.py -v -s
+
+    - name: Clean up test artifacts (optional)
+      run: |
+        rm -rf /app/test_data/*  # Clean up after tests if needed
