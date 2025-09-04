@@ -22,7 +22,9 @@ logger = logging.getLogger(__name__)
 # Constants shared across tests
 # ──────────────────────────────────────────────────────────────────────────────
 UUID = "pytest_100"  # Single source of truth for both tests
-OUTPUT_ROOT = Path("/app/test_data").resolve()  # pre-created in CI; still ensure existence
+OUTPUT_ROOT = Path(
+    "/app/test_data"
+).resolve()  # pre-created in CI; still ensure existence
 COLL_DIR = OUTPUT_ROOT / f"TEST_CUBE_ERA5_{UUID}"
 EXPECTED_ZARR = COLL_DIR / f"TEST_CUBE_ERA5_{UUID}.zarr"
 EXPECTED_COLLECTION = COLL_DIR / "collection.json"
@@ -226,7 +228,9 @@ def test_complete_processing_pipeline(dask_client, ensure_output_root):
     dataset_result = final_result.to_dataset(dim="bands")
     assert isinstance(dataset_result, xr.Dataset)
 
-    expected_original = BANDS["era5"] + BANDS["pressure"] + BANDS["dem"] + ["target_dataset"]
+    expected_original = (
+        BANDS["era5"] + BANDS["pressure"] + BANDS["dem"] + ["target_dataset"]
+    )
     expected_bands = expected_original + PROCESSING_BANDS
 
     assert all(b in dataset_result.data_vars for b in expected_bands), (
@@ -236,7 +240,9 @@ def test_complete_processing_pipeline(dask_client, ensure_output_root):
     assert len(dataset_result.data_vars) == len(expected_bands)
     assert "time" in dataset_result.dims and len(dataset_result.time) > 0
 
-    logger.info("Pipeline completed successfully with all processing steps & validations")
+    logger.info(
+        "Pipeline completed successfully with all processing steps & validations"
+    )
 
 
 @pytest.mark.integration
@@ -302,13 +308,17 @@ def test_end_to_end_pixel_model_pipeline(dask_client, ensure_output_root):
     results_dir = OUTPUT_ROOT / "results"
     results_dir.mkdir(parents=True, exist_ok=True)
     model_file = results_dir / f"{target_var}_models_scalers.joblib"
-    joblib.dump({"models": models, "y_coords": y_coords, "x_coords": x_coords}, model_file)
+    joblib.dump(
+        {"models": models, "y_coords": y_coords, "x_coords": x_coords}, model_file
+    )
     assert model_file.exists(), "Model file was not written"
 
     # Predict on test
     X_test_time = X_test.time
     X_test_np = X_test.astype(np.float32).to_array().values
-    test_preds = np.full((len(X_test_time), len(y_coords), len(x_coords)), np.nan, dtype=np.float32)
+    test_preds = np.full(
+        (len(X_test_time), len(y_coords), len(x_coords)), np.nan, dtype=np.float32
+    )
 
     for (i, j), (model, scaler) in models.items():
         Xp = X_test_np[:, :, i, j].T  # (time, features)
