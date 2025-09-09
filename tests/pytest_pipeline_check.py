@@ -125,7 +125,7 @@ def test_complete_processing_pipeline(dask_client, test_parameters):
         merged = merged.rename_dimension(target="x", source="lon")
 
         # Use relative path for CI/CD compatibility
-        output_path = ""
+        output_path = "./"
         os.makedirs(output_path, exist_ok=True)
 
         zarr_path = os.path.join(
