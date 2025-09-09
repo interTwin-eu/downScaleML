@@ -212,7 +212,7 @@ def test_end_to_end_pixel_model_pipeline(dask_client):
 
     # Use relative path for CI/CD compatibility
     output_dir = "/app/test_data/"
-    os.makedirs(output_path, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
 
     # Load STAC via openEO
     local_conn = LocalConnection("./")
