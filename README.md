@@ -1,6 +1,5 @@
 # downScaleML: openEO-enabled Downscaling Pipeline for Climate Data
 
-````markdown
 
 This repository provides an openEO-based, Docker-compatible, reproducible testing framework for downscaling Earth Observation (EO) data. It supports a modular data processing and machine learning pipeline for climate data—powered by STAC, Dask, and LightGBM. The tests are designed to validate processing and modeling logic using both public and restricted datasets.
 
@@ -26,7 +25,6 @@ This repository provides an openEO-based, Docker-compatible, reproducible testin
 | EMO1, DEM     | Public       | Same as ERA5                        | 2000–2022 used              | EMO1 contains downstream targets      |
 
 ---
-````
 ## 🚀 Quick Start
 
 ### 🐳 Run with Docker (Recommended)
