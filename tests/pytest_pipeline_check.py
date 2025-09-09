@@ -125,7 +125,7 @@ def test_complete_processing_pipeline(dask_client, test_parameters):
         merged = merged.rename_dimension(target="x", source="lon")
 
         # Use relative path for CI/CD compatibility
-        output_path = "/app/test_data/"
+        output_path = "./"
         os.makedirs(output_path, exist_ok=True)
 
         zarr_path = os.path.join(
@@ -211,8 +211,8 @@ def test_end_to_end_pixel_model_pipeline(dask_client):
     target_var = "target_dataset"
 
     # Use relative path for CI/CD compatibility
-    output_dir = "/app/test_data/"
-    os.makedirs(output_dir, exist_ok=True)
+    output_dir = Path("")
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     # Load STAC via openEO
     local_conn = LocalConnection("./")
