@@ -125,7 +125,7 @@ def test_complete_processing_pipeline(dask_client, test_parameters):
         merged = merged.rename_dimension(target="x", source="lon")
 
         # Use relative path for CI/CD compatibility
-        output_path = "./test_data/"
+        output_path = ""
         os.makedirs(output_path, exist_ok=True)
 
         zarr_path = os.path.join(
@@ -205,13 +205,13 @@ def test_end_to_end_pixel_model_pipeline(dask_client):
     secret_key = os.getenv("SECRET_KEY")
 
     STAC_URLS = {
-        "train_xy": "https://stac.intertwin.fedcloud.eu/collections/TEST_CUBE_ERA5_pytest_100"
+        "train_xy": "https://stac.intertwin.fedcloud.eu/collections/TEST_CUBE_ERA5_pytest_101"
     }
     spatial_extent = {"west": 11, "east": 11.5, "south": 46, "north": 46.5}
     target_var = "target_dataset"
 
     # Use relative path for CI/CD compatibility
-    output_dir = Path("./test_data/results/")
+    output_dir = Path("")
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Load STAC via openEO
